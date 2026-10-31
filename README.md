@@ -92,7 +92,7 @@ The production build includes a web app manifest, pick icons (including the iOS 
 2. On iPhone/iPad, open the deployed address in Safari, tap **Share → Add to Home Screen**, enable **Open as Web App** if shown, and tap **Add**.
 3. On Android or desktop, use the browser’s **Install app / Add to Home screen** menu when available.
 
-Visit once online and let the page finish loading before going offline. The library and exercise are precached together. Updates download in the background and activate after all existing app windows/tabs close, so an update does not interrupt practice. Sound still requires pressing Start. The device/browser can clear offline data, so reopen online if needed.
+Visit once online and let the page finish loading before going offline. The library and exercise are precached together. Updates download and activate in the background without reloading an active practice session. An update notice lets you choose when to reload. Online navigations revalidate HTML; cached pages remain available offline. Sound still requires pressing Start. The device/browser can clear offline data, so reopen online if needed.
 
 Offline support runs only in production builds, not `npm run dev`. To test locally, run `npm run build` and `npm run preview`. Localhost is valid for desktop testing; an iPhone cannot reach your computer through `127.0.0.1`, and an ordinary HTTP LAN address will not provide service-worker support. Use a phone-accessible HTTPS deployment for installation and offline use.
 
@@ -130,7 +130,7 @@ Upload the **dist folder** to Netlify’s manual deploy area. Include its `_head
 - Visit online once, wait for the initial page to finish loading, then check the exercise offline.
 - Install from Safari’s Share menu on iPhone, or the install menu in other supported browsers.
 
-`public/_headers` is copied into `dist/` and tells Netlify to revalidate the service worker, manifest, and named icons. Only fingerprinted `_astro/` assets receive immutable caching. There is no catch-all SPA rewrite, so missing files return normal 404s. The offline cache is rebuilt automatically whenever the site content changes. Existing app windows must close before a downloaded PWA update activates.
+`public/_headers` is copied into `dist/` and tells Netlify to revalidate the service worker, manifest, and named icons. Only fingerprinted `_astro/` assets receive immutable caching. There is no catch-all SPA rewrite, so missing files return normal 404s. The offline cache is rebuilt automatically whenever the site content changes. PWA updates activate in the background; use the update notice or an ordinary reload to load the latest interface.
 
 A custom domain can be added later without changing the manifest; all app URLs are relative to the domain root.
 
@@ -144,4 +144,4 @@ Choose single chords, short progressions, or both. Reverse questions (chord name
 
 Review records and preferences are stored on this device under `guitar-workout:harmony:v1`. Missed questions return after three intervening questions when there is room in the session and remain due for later sessions. Correct reviews are scheduled after 1, 3, 7, 14, 30, then 60 days; errors reset the interval. Due questions take priority over unseen questions. These intervals are a simple practice heuristic, not a calibrated model of individual memory. Progress does not sync across devices or browsers, and clearing site data removes it. If storage is blocked, the exercise still works for the visit.
 
-The generated PWA cache includes this exercise and its assets automatically. Existing installations receive it after downloading the new version and closing all old app windows.
+The generated PWA cache includes this exercise and its assets automatically. Existing installations receive it after downloading the new version; reload when ready.

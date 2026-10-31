@@ -26,14 +26,7 @@ const { title, description = 'A personal collection of guitar exercises. Pick a 
       <main id="main"><slot /></main>
       <footer>A little practice, often.</footer>
     </div>
+    <aside id="pwa-update" class="pwa-update" role="status" hidden><span>Update ready. Reload when you’ve finished practicing.</span><button id="pwa-reload" type="button">Reload</button></aside>
   </body>
 </html>
-<script>
-  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' }).catch((error) => {
-        console.error('Offline support could not be registered:', error);
-      });
-    });
-  }
-</script>
+<script src="../scripts/pwa.ts"></script>
