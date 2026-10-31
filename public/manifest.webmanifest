@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "Alex’s guitar workout",
+  "short_name": "Guitar workout",
+  "description": "Guitar exercises and fretboard practice with an audible metronome.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f2efdf",
+  "theme_color": "#f2efdf",
+  "icons": [
+    { "src": "/icons/pick-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pick-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pick-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

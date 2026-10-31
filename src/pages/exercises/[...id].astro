@@ -1,0 +1,23 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+export async function getStaticPaths() {
+  return (await getCollection('exercises')).map((exercise) => ({
+    params: { id: exercise.id }, props: { exercise },
+  }));
+}
+interface Props { exercise: CollectionEntry<'exercises'> }
+const { exercise } = Astro.props;
+const { Content } = await render(exercise);
+const { data } = exercise;
+---
+<Layout title={data.title} description={data.description}>
+  <a class="back-link" href="/">← All exercises</a>
+  <article>
+    <p class="eyebrow">{data.category}</p>
+    <h1 class="exercise-title">{data.title}</h1>
+    <p class="lede">{data.description}</p>
+    <div class="exercise-meta"><span>{data.level}</span><span>{data.minutes} minutes</span>{data.bpm && <span>Start at {data.bpm} BPM</span>}</div>
+    <div class="prose"><Content /></div>
+  </article>
+</Layout>

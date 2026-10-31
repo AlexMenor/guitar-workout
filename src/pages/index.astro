@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+const exercises = (await getCollection('exercises')).filter(({ id }) => id !== 'chromatic-warm-up').sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+<Layout title="Exercise library">
+  <section aria-label="Exercises">
+    <div class="exercise-grid">
+      <a class="exercise-card" href="/exercises/fretboard-notes/">
+
+        <h3>Know your notes</h3>
+        <p>Find all 12 notes, one string per beat. Build your fretboard memory with an audible metronome.</p>
+
+      </a>
+      {exercises.map(({ id, data }) => (
+        <a class="exercise-card" href={`/exercises/${id}/`}>
+
+          <h3>{data.title}</h3>
+          <p>{data.description}</p>
+
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
