@@ -133,3 +133,15 @@ Upload the **dist folder** to Netlify’s manual deploy area. Include its `_head
 `public/_headers` is copied into `dist/` and tells Netlify to revalidate the service worker, manifest, and named icons. Only fingerprinted `_astro/` assets receive immutable caching. There is no catch-all SPA rewrite, so missing files return normal 404s. The offline cache is rebuilt automatically whenever the site content changes. Existing app windows must close before a downloaded PWA update activates.
 
 A custom domain can be added later without changing the manifest; all app URLs are relative to the domain root.
+
+## Know your chords
+
+Open `/exercises/know-your-chords/` from the library. This silent, untimed exercise uses 10-question sessions, a touch-friendly note/quality keypad, feedback, chord-tone explanations, and a scale reference after each answer.
+
+All seven triads in all 15 conventional major key signatures and all 15 natural-minor key signatures are available immediately. Enharmonic keys are included separately to teach correct key spelling. Equivalent pitches are accepted, with the conventional spelling explained. Minor always uses the natural-minor pattern, including minor `v`.
+
+Choose single chords, short progressions, or both. Reverse questions (chord name → Roman numeral) are optional. In a progression, answer one chord at a time; the full progression counts as correct only when all its chords are correct without revealing an answer.
+
+Review records and preferences are stored on this device under `guitar-workout:harmony:v1`. Missed questions return after three intervening questions when there is room in the session and remain due for later sessions. Correct reviews are scheduled after 1, 3, 7, 14, 30, then 60 days; errors reset the interval. Due questions take priority over unseen questions. These intervals are a simple practice heuristic, not a calibrated model of individual memory. Progress does not sync across devices or browsers, and clearing site data removes it. If storage is blocked, the exercise still works for the visit.
+
+The generated PWA cache includes this exercise and its assets automatically. Existing installations receive it after downloading the new version and closing all old app windows.

@@ -12,6 +12,10 @@ const exercises = (await getCollection('exercises')).filter(({ id }) => id !== '
         <p>Find all 12 notes, one string per beat. Build your fretboard memory with an audible metronome.</p>
 
       </a>
+      <a class="exercise-card chord-card" href="/exercises/know-your-chords/">
+        <h3>Know your chords</h3>
+        <p>Recall the chords of major and natural-minor keys. Short sessions, explanations, and spaced review.</p>
+      </a>
       {exercises.map(({ id, data }) => (
         <a class="exercise-card" href={`/exercises/${id}/`}>
 
