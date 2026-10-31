@@ -29,6 +29,7 @@ import '../../styles/fretboard.css';
         <input id="tempo" type="range" min="20" max="180" step="1" value="60" />
         <p class="setting-help">Pause to change speed.</p>
       </div>
+      <div class="note-setting"><label class="setting-label" for="note-pool">Notes</label><select id="note-pool"><option value="all">All 12 notes</option><option value="accidentals">Accidentals only</option></select></div>
       <fieldset id="mode-options"><legend>Practice mode</legend><div class="mode-options"><label><input type="radio" name="mode" value="timed" checked /><span>Timed</span></label><label><input type="radio" name="mode" value="endless" /><span>Endless</span></label></div></fieldset>
       <div id="duration-field"><label class="setting-label" for="duration">Duration</label><select id="duration"><option value="60">1 minute</option><option value="180">3 minutes</option><option value="300" selected>5 minutes</option><option value="600">10 minutes</option><option value="900">15 minutes</option><option value="1800">30 minutes</option></select></div>
     </aside>

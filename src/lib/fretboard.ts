@@ -4,15 +4,16 @@ const FLAT_NOTES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A'
 export function spellNote(pitch: number, random: () => number = Math.random) {
   return (random() < 0.5 ? NOTES : FLAT_NOTES)[pitch]!;
 }
+export const ACCIDENTALS = [1, 3, 6, 8, 10];
 export const STRINGS = ['Low E', 'A', 'D', 'G', 'B', 'High E'];
 
-// A shuffled deck visits all twelve pitch classes before drawing a fresh deck.
-export function createNotePicker(random: () => number = Math.random) {
+// Visit every pitch in the selected pool before drawing a fresh deck.
+export function createNotePicker(random: () => number = Math.random, pool: readonly number[] = NOTES.map((_, i) => i)) {
   let deck: number[] = [];
   let previous = -1;
   return () => {
     if (!deck.length) {
-      deck = Array.from({ length: 12 }, (_, i) => i);
+      deck = [...pool];
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(random() * (i + 1));
         [deck[i], deck[j]] = [deck[j]!, deck[i]!];

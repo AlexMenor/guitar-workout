@@ -1,4 +1,4 @@
-import { beatFrame, createNotePicker, formatTime, spellNote } from '../lib/fretboard';
+import { ACCIDENTALS, beatFrame, createNotePicker, formatTime, spellNote } from '../lib/fretboard';
 
 const root = document.querySelector<HTMLElement>('[data-trainer]')!;
 function element<T extends HTMLElement>(id: string) { return root.querySelector<T>(`#${id}`)!; }
@@ -6,6 +6,7 @@ const start = element<HTMLButtonElement>('start');
 const stop = element<HTMLButtonElement>('stop');
 const tempo = element<HTMLInputElement>('tempo');
 const duration = element<HTMLSelectElement>('duration');
+const notePool = element<HTMLSelectElement>('note-pool');
 const modes = element<HTMLFieldSetElement>('mode-options');
 const clock = element('session-clock');
 const message = element('message');
@@ -19,7 +20,8 @@ const countElements = Array.from(root.querySelectorAll<HTMLElement>('[data-count
 let state: 'ready' | 'running' | 'paused' | 'finished' = 'ready';
 let audio: AudioContext | undefined;
 let starting = false;
-let pick = createNotePicker();
+function makePicker() { return createNotePicker(Math.random, notePool.value === 'accidentals' ? ACCIDENTALS : undefined); }
+let pick = makePicker();
 let notes = [spellNote(pick()), spellNote(pick())];
 let elapsedBefore = 0;
 let completedBefore = 0;
@@ -56,6 +58,7 @@ function settings() {
   tempo.disabled = active;
   modes.disabled = active || state === 'paused';
   duration.disabled = modes.disabled;
+  notePool.disabled = modes.disabled;
   element('duration-field').hidden = !timed();
   start.disabled = starting;
   start.textContent = starting ? 'Starting…' : state === 'running' ? 'Pause' : state === 'paused' ? 'Resume practice' : state === 'finished' ? 'Practice again' : 'Start practice';
@@ -182,7 +185,7 @@ async function begin() {
     if (token !== generation || document.hidden) return;
     if (audio.state !== 'running') throw new Error('Audio unavailable');
     if (state !== 'paused') {
-      pick = createNotePicker();
+      pick = makePicker();
       notes = [spellNote(pick()), spellNote(pick())];
       elapsedBefore = completedBefore = completed = displayedRound = 0;
     }
@@ -213,6 +216,11 @@ stop.addEventListener('click', finish);
 tempo.addEventListener('input', () => { element('tempo-output').textContent = tempo.value; });
 root.querySelectorAll('input[name="mode"]').forEach(input => input.addEventListener('change', () => { settings(); progress(); }));
 duration.addEventListener('change', () => progress());
+notePool.addEventListener('change', () => {
+  pick = makePicker();
+  notes = [spellNote(pick()), spellNote(pick())];
+  showNotes();
+});
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (starting) generation++;

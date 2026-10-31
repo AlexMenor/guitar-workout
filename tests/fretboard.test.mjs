@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { NOTES, STRINGS, beatFrame, createNotePicker, formatTime } from '../src/lib/fretboard.ts';
+import { ACCIDENTALS, NOTES, STRINGS, beatFrame, createNotePicker, formatTime } from '../src/lib/fretboard.ts';
 
 test('each deck covers all 12 notes, without repeats at deck boundaries', () => {
   for (const random of [Math.random, () => 0, () => 0.999]) {
@@ -26,4 +26,17 @@ test('timer rounds up and clamps at zero', () => {
   assert.equal(formatTime(300), '5:00');
   assert.equal(formatTime(59.2), '1:00');
   assert.equal(formatTime(-0.1), '0:00');
+});
+
+test('accidental decks cover exactly the five accidental pitches without immediate repeats', () => {
+  for (const random of [Math.random, () => 0, () => 0.999]) {
+    const draw = createNotePicker(random, ACCIDENTALS);
+    let previous;
+    for (let deck = 0; deck < 100; deck++) {
+      const notes = Array.from({ length: 5 }, draw);
+      assert.deepEqual([...notes].sort((a, b) => a - b), [1, 3, 6, 8, 10]);
+      assert.notEqual(notes[0], previous);
+      previous = notes.at(-1);
+    }
+  }
 });
