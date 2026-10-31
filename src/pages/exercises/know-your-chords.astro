@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { ROOT_OPTIONS } from '../../lib/harmony';
 import '../../styles/harmony.css';
 ---
 <Layout title="Know your chords" description="Learn major and natural-minor chords with short recall sessions and spaced review, online or offline.">
@@ -18,7 +19,7 @@ import '../../styles/harmony.css';
       <div id="progression-slots" class="progression-slots" hidden></div>
       <p class="recall-hint" id="recall-hint">Think of the chord first, then enter your answer.</p>
       <form id="answer-form">
-        <fieldset id="root-field"><legend>Root note</legend><div class="answer-grid root-grid">{['C','D','E','F','G','A','B'].map(note => <label><input type="radio" name="root" value={note} /><span>{note}</span></label>)}</div><div class="answer-grid accidental-grid">{[['♭','Flat'],['','Natural'],['♯','Sharp']].map(([value,label]) => <label><input type="radio" name="accidental" value={value} checked={value === ''} /><span>{label}</span></label>)}</div></fieldset>
+        <fieldset id="root-field"><legend>Root note</legend><div class="answer-grid root-grid">{ROOT_OPTIONS.map(notes => <label><input type="radio" name="root" value={notes[0]} /><span>{notes.join(' / ')}</span></label>)}</div></fieldset>
         <fieldset id="quality-field"><legend>Chord quality</legend><div class="answer-grid quality-grid">{['major','minor','diminished'].map(quality => <label><input type="radio" name="quality" value={quality} /><span>{quality[0]!.toUpperCase() + quality.slice(1)}</span></label>)}</div></fieldset>
         <fieldset id="degree-field" hidden><legend>Chord degree</legend><div id="degree-options" class="answer-grid degree-grid"></div></fieldset>
         <p id="answer-error" role="alert"></p>
@@ -26,7 +27,7 @@ import '../../styles/harmony.css';
       </form>
       <section id="feedback" class="feedback" aria-label="Answer feedback" hidden><h3 id="feedback-title" tabindex="-1"></h3><p id="feedback-reason"></p><p id="feedback-notes"></p><div id="scale-explanation" class="scale-explanation"></div><button id="next-question" class="harmony-primary" type="button">Next question</button></section>
     </div>
-    <section id="session-summary" class="harmony-pedal session-summary" hidden><h2 id="summary-title" tabindex="-1">Session complete.</h2><p id="summary-score"></p><p id="summary-review"></p><button id="practice-again" class="harmony-primary" type="button">Practice again</button></section>
+    <section id="session-summary" class="harmony-pedal session-summary" hidden><h2 id="summary-title" tabindex="-1">Session complete.</h2><p id="summary-score"></p><p id="summary-review"></p><div class="answer-actions"><button id="retry-missed" class="harmony-primary" type="button" hidden>Retry missed questions</button><button id="practice-again" type="button">New session</button></div></section>
     <p id="storage-message" class="harmony-help" role="status"></p>
     <p class="harmony-help">All 15 standard key signatures in each mode. Minor means natural minor. No timer, no sound.</p>
     <noscript><p>Enable JavaScript to practice chords.</p></noscript>

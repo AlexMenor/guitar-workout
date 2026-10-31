@@ -1,4 +1,4 @@
-import { chord, chordName, chooseCard, keyName, makeCards, pitch, reviewAnswer, scale, type Card, type Preferences, type Reviews } from '../lib/harmony';
+import { ROOT_OPTIONS, chord, chordName, chooseCard, keyName, makeCards, pitch, reviewAnswer, scale, type Card, type Preferences, type Reviews } from '../lib/harmony';
 const root = document.querySelector<HTMLElement>('[data-harmony]')!;
 function el<T extends HTMLElement = HTMLElement>(id: string) { return root.querySelector<T>(`#${id}`)!; }
 const mode = el<HTMLSelectElement>('scale-mode');
@@ -17,6 +17,9 @@ let awaitingNext = false;
 let seen = new Set<string>();
 let retries: { at: number; card: Card }[] = [];
 let cards: Card[] = [];
+let sessionSize = 10;
+let retryDeck: Card[] | null = null;
+let missed = new Map<string, Card>();
 function preferences(): Preferences { return { mode: mode.value as Preferences['mode'], kind: kind.value as Preferences['kind'], reverse: reverse.checked }; }
 function storageWarning() { el('storage-message').textContent = storageAvailable ? 'Review progress is saved on this device, including offline.' : 'Storage is unavailable. You can practice, but progress will only last for this visit.'; }
 try {
@@ -41,7 +44,7 @@ function persist() {
   storageWarning();
 }
 function updateProgress() {
-  el('question-progress').textContent = `Question ${Math.min(answered + 1, 10)} of 10`;
+  el('question-progress').textContent = `${retryDeck ? 'Retry' : 'Question'} ${Math.min(answered + 1, sessionSize)} of ${sessionSize}`;
   const due = cards.filter(c => reviews[c.id] && reviews[c.id]!.due <= Date.now()).length;
   el('review-status').textContent = due ? `${due} due for review` : 'All keys available';
 }
@@ -91,7 +94,8 @@ function renderQuestion(focus = false) {
 }
 function nextCard(focus = false) {
   const retry = retries.findIndex(r => r.at <= answered);
-  if (retry >= 0) card = retries.splice(retry, 1)[0]!.card;
+  if (retryDeck) card = retryDeck[answered]!;
+  else if (retry >= 0) card = retries.splice(retry, 1)[0]!.card;
   else card = chooseCard(cards, reviews, seen, Date.now());
   seen.add(card.id);
   step = 0; cardCorrect = true;
@@ -106,9 +110,9 @@ function showFeedback(revealed = false) {
     el('answer-error').textContent = backward ? 'Choose a chord degree.' : 'Choose a root note and chord quality.';
     return;
   }
-  const selectedRoot = `${data.get('root') ?? ''}${data.get('accidental') ?? ''}`;
+  const selectedRoot = String(data.get('root') ?? '');
   const right = !revealed && (backward ? Number(data.get('degree')) === card.degrees[step] : pitch(selectedRoot) === pitch(expected.root) && data.get('quality') === expected.quality);
-  const alternateSpelling = right && !backward && selectedRoot !== expected.root;
+  const alternateSpelling = right && !backward && !ROOT_OPTIONS.find(notes => notes[0] === selectedRoot)?.includes(expected.root);
   cardCorrect &&= right;
   awaitingNext = true;
   form.hidden = true;
@@ -126,7 +130,7 @@ function showFeedback(revealed = false) {
     item.append(numeral, document.createTextNode(note)); explanation.append(item);
   });
   const lastStep = step === card.degrees.length - 1;
-  el('next-question').textContent = !lastStep ? 'Next chord' : answered === 9 ? 'Finish session' : 'Next question';
+  el('next-question').textContent = !lastStep ? 'Next chord' : answered === sessionSize - 1 ? (retryDeck ? 'Finish retry' : 'Finish session') : 'Next question';
   if (lastStep) {
     reviews[card.id] = reviewAnswer(reviews[card.id], cardCorrect, Date.now());
     persist();
@@ -138,13 +142,21 @@ function completeQuestion() {
   if (step < card.degrees.length - 1) { step++; renderQuestion(true); return; }
   answered++;
   if (cardCorrect) correctCount++;
-  else retries.push({ at: answered + 3, card });
-  if (answered < 10) nextCard(true);
+  else {
+    missed.set(card.id, card);
+    if (!retryDeck) retries.push({ at: answered + 3, card });
+  }
+  awaitingNext = false;
+  if (answered < sessionSize) nextCard(true);
   else {
     el('question-panel').hidden = true;
     el('session-summary').hidden = false;
-    el('question-progress').textContent = '10 questions complete';
-    el('summary-score').textContent = `${correctCount} of 10 correct without revealing an answer. Progressions count when every chord is correct.`;
+    el('question-progress').textContent = `${sessionSize} ${sessionSize === 1 ? 'question' : 'questions'} complete`;
+    el('summary-title').textContent = retryDeck ? 'Retry complete.' : 'Session complete.';
+    const retryButton = el<HTMLButtonElement>('retry-missed');
+    retryButton.hidden = missed.size === 0;
+    retryButton.textContent = `Retry ${missed.size} missed ${missed.size === 1 ? 'question' : 'questions'}`;
+    el('summary-score').textContent = `${correctCount} of ${sessionSize} correct without revealing an answer. Progressions count when every chord is correct.`;
     const due = cards.filter(c => reviews[c.id] && reviews[c.id]!.due <= Date.now()).length;
     el('summary-review').textContent = due ? `${due} ${due === 1 ? 'question is' : 'questions are'} ready to revisit. Missed questions return sooner; correct answers are spaced across later days.` : 'Correct answers will return on later days. You can keep practicing now, too.';
     el('summary-title').focus();
@@ -152,6 +164,7 @@ function completeQuestion() {
 }
 function newSession() {
   answered = correctCount = 0; seen = new Set(); retries = [];
+  sessionSize = 10; retryDeck = null; missed = new Map();
   reverse.disabled = kind.value === 'progression';
   cards = makeCards(preferences());
   el('question-panel').hidden = false;
@@ -162,6 +175,17 @@ form.addEventListener('submit', event => { event.preventDefault(); showFeedback(
 el('reveal-answer').addEventListener('click', () => showFeedback(true));
 el('next-question').addEventListener('click', completeQuestion);
 el('practice-again').addEventListener('click', newSession);
+el('retry-missed').addEventListener('click', () => {
+  if (!missed.size) return;
+  retryDeck = Array.from(missed.values());
+  sessionSize = retryDeck.length;
+  missed = new Map();
+  answered = correctCount = 0;
+  retries = [];
+  el('question-panel').hidden = false;
+  el('session-summary').hidden = true;
+  nextCard(true);
+});
 for (const setting of [mode, kind, reverse]) setting.addEventListener('change', () => { persist(); newSession(); });
 newSession();
 storageWarning();

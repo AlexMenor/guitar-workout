@@ -1,3 +1,4 @@
+export const ROOT_OPTIONS = [['C'], ['C♯', 'D♭'], ['D'], ['D♯', 'E♭'], ['E'], ['F'], ['F♯', 'G♭'], ['G'], ['G♯', 'A♭'], ['A'], ['A♯', 'B♭'], ['B']];
 export type Mode = 'major' | 'minor';
 export type Quality = 'major' | 'minor' | 'diminished';
 export type Direction = 'forward' | 'reverse' | 'progression';
