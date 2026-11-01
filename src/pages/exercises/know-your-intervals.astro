@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ROOT_OPTIONS } from '../../lib/harmony';
+import '../../styles/intervals.css';
+---
+<Layout title="Know your intervals" description="Recognize one ascending interval across all twelve tonics with quick, silent practice rounds.">
+  <a class="back-link" href="/">← All exercises</a>
+  <section class="interval-trainer" data-intervals aria-labelledby="interval-title">
+    <h1 id="interval-title">Know your intervals.</h1>
+    <div id="interval-round">
+      <div class="interval-fixed"><span class="interval-label">ASCENDING INTERVAL</span><h2 id="interval-name">—</h2></div>
+      <div class="interval-progress"><span id="interval-progress">1 / 12</span><span id="interval-score">0 correct</span></div>
+      <div class="tonic-pedal"><span class="interval-label">TONIC</span><strong id="interval-tonic" aria-live="polite" aria-atomic="true">—</strong></div>
+      <fieldset class="interval-answers"><legend>Choose the note above this tonic</legend><div class="interval-keypad">{ROOT_OPTIONS.map((notes, pitch) => <button type="button" data-pitch={pitch}>{notes.join(' / ')}</button>)}</div></fieldset>
+      <p id="interval-feedback" class="interval-feedback" role="status" aria-live="polite"></p>
+    </div>
+    <section id="interval-summary" class="interval-summary" hidden><h2 tabindex="-1" id="interval-summary-title">Round complete.</h2><p id="interval-summary-score"></p><p id="interval-summary-name"></p><button id="interval-again" type="button">New round</button></section>
+    <noscript><p>Enable JavaScript to practice intervals.</p></noscript>
+  </section>
+</Layout>
+<script src="../../scripts/intervals.ts"></script>

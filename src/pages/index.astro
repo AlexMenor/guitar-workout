@@ -16,6 +16,10 @@ const exercises = (await getCollection('exercises')).filter(({ id }) => id !== '
         <h3>Know your chords</h3>
         <p>Recall the chords of major and natural-minor keys. Short sessions, explanations, and spaced review.</p>
       </a>
+      <a class="exercise-card interval-card" href="/exercises/know-your-intervals/">
+        <h3>Know your intervals</h3>
+        <p>One interval, all 12 tonics. Build instant recognition with quick, silent rounds.</p>
+      </a>
       {exercises.map(({ id, data }) => (
         <a class="exercise-card" href={`/exercises/${id}/`}>
 

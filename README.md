@@ -145,3 +145,9 @@ Choose single chords, short progressions, or both. Reverse questions (chord name
 Review records and preferences are stored on this device under `guitar-workout:harmony:v1`. Missed questions return after three intervening questions when there is room in the session and remain due for later sessions. Correct reviews are scheduled after 1, 3, 7, 14, 30, then 60 days; errors reset the interval. Due questions take priority over unseen questions. These intervals are a simple practice heuristic, not a calibrated model of individual memory. Progress does not sync across devices or browsers, and clearing site data removes it. If storage is blocked, the exercise still works for the visit.
 
 The generated PWA cache includes this exercise and its assets automatically. Existing installations receive it after downloading the new version; reload when ready.
+
+## Know your intervals
+
+Open `/exercises/know-your-intervals/`. Each round chooses one ascending interval and keeps it fixed while all 12 pitch classes appear as tonics exactly once, in shuffled order. The ten intervals are minor/major 2nds, 3rds, 6ths and 7ths, plus perfect 4ths and 5ths. Unison and tritone are excluded. New rounds choose a different interval from the previous round.
+
+Tap one of twelve chromatic note buttons. Correct answers show for 0.9 seconds; wrong answers highlight the correct pitch and show its theoretical spelling for 1.5 seconds, then advance automatically. Equivalent pitches are accepted, including answers whose theoretical spelling requires a double accidental. The interval and changing tonic are displayed separately. At the end, see a score out of 12 and start another round. Automatic advancement pauses while the page is hidden. This exercise is silent, works offline after the production PWA cache is installed, and does not store round scores.
