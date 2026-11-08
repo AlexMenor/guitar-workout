@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import '../styles/circle.css';
 const exercises = (await getCollection('exercises')).filter(({ id }) => id !== 'chromatic-warm-up').sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 <Layout title="Exercise library">
@@ -19,6 +20,10 @@ const exercises = (await getCollection('exercises')).filter(({ id }) => id !== '
       <a class="exercise-card interval-card" href="/exercises/know-your-intervals/">
         <h3>Know your intervals</h3>
         <p>One interval, all 12 tonics. Build instant recognition with quick, silent rounds.</p>
+      </a>
+      <a class="exercise-card keys-card" href="/exercises/know-your-keys/">
+        <h3>Know your keys</h3>
+        <p>See chord families on the circle of fifths. Learn their numbers in major and minor, one family at a time.</p>
       </a>
       {exercises.map(({ id, data }) => (
         <a class="exercise-card" href={`/exercises/${id}/`}>
