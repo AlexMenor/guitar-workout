@@ -23,7 +23,7 @@ const exercises = (await getCollection('exercises')).filter(({ id }) => id !== '
       </a>
       <a class="exercise-card keys-card" href="/exercises/know-your-keys/">
         <h3>Know your keys</h3>
-        <p>See chord families on the circle of fifths. Learn their numbers in major and minor, one family at a time.</p>
+        <p>Study a chord family on the circle, then fill in its missing names and numbers.</p>
       </a>
       {exercises.map(({ id, data }) => (
         <a class="exercise-card" href={`/exercises/${id}/`}>

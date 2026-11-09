@@ -1,57 +1,64 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { STAGES, PRIORITY, getKey } from '../../lib/circle';
-import { keyName } from '../../lib/harmony';
+import { FAMILIES } from '../../lib/circle';
 import '../../styles/circle.css';
 ---
-<Layout title="Know your keys" description="Learn chord families and scale degrees visually with the circle of fifths, in major and natural minor.">
-<a class="back-link" href="/">← All exercises</a>
-<section class="keys" data-circle>
-  <h1>Know your keys.</h1>
-  <p class="keys-intro">See the pattern. Find the chords. Remember their numbers.</p>
-  <div class="keys-settings">
-    <label>Practice stage<select id="stage">{STAGES.map((s,i)=><option value={i}>{i+1}. {s}</option>)}</select></label>
-    <label>Key focus<select id="focus"><option value="journey">Guided journey · one family at a time</option><option value="priority">Mix my priority keys</option>{PRIORITY.map(id=><option value={id}>{keyName(getKey(id))}</option>)}</select></label>
-  </div>
-  <p id="journey" class="keys-help"></p>
-  <div class="keys-progress"><span id="progress"></span><span id="mastery"></span></div>
-  <section id="practice" class="keys-panel">
-    <div class="keys-workspace">
-      <div>
-        <div class="circle" id="circle" role="group" aria-label="Circle of fifths: outer major chords, inner minor chords">
-          <svg viewBox="0 0 500 500" aria-hidden="true"><circle cx="250" cy="250" r="207"/><circle cx="250" cy="250" r="142"/><path d="M250 43 A207 207 0 0 1 353.5 70.7"/><path d="M344 59 L354 71 L339 73"/></svg>
-          <div class="circle-center"><strong id="circle-key"></strong><span>Outer: major<br/>Inner: minor</span><small>Clockwise → fifths</small></div>
-        </div>
-        <button id="dim" type="button" class="dim-node"></button>
-        <p class="circle-legend">● Home chord &nbsp; <span>●</span> Chord family<br/>Numbers change with the selected key; positions stay put.</p>
-        <p class="enharmonic-note">Two names, one position: F♯ = G♭, C♯ = D♭, B = C♭. The active key determines its chords’ spelling.</p>
+<Layout title="Know your keys" description="Memorise a chord family on the circle of fifths, then fill in its missing names and numbers.">
+  <a class="back-link" href="/">← All exercises</a>
+  <section class="keys" data-circle aria-labelledby="keys-title">
+    <div class="keys-heading">
+      <div><p class="keys-kicker">THE CHORD FAMILY TRAINER</p><h1 id="keys-title">Know your keys.</h1></div>
+      <label class="family-picker">Chord family
+        <select id="family">{FAMILIES.map(([major, minor], i) => <option value={i}>{major} major / {minor} minor</option>)}</select>
+      </label>
+    </div>
+    <div class="key-toolbar">
+      <div class="key-modes" role="group" aria-label="Choose the home key">
+        <button id="major-key" type="button" aria-pressed="true">C major</button>
+        <button id="minor-key" type="button" aria-pressed="false">A minor</button>
       </div>
-      <div class="keys-question">
-        <p id="key-name" class="key-label"></p>
-        <h2 id="prompt" tabindex="-1"></h2>
-        <p id="instruction"></p>
-        <div id="degree-answers" class="degree-answers" role="group" aria-label="Choose the chord number" hidden></div>
-        <div id="slots" class="key-slots" aria-label="Your chord family"></div>
-        <div class="keys-actions"><button id="hint" type="button">Show visual hint</button><button id="undo" type="button" hidden>Undo last</button><button id="check" type="button" hidden>Check family</button></div>
-        <div id="feedback" role="status" aria-live="polite"></div>
-        <div id="answer-map" class="answer-map" hidden></div>
-        <button id="next" type="button" class="keys-primary" hidden>Next question</button>
+      <span id="mode-note">Same chords. A different home.</span>
+    </div>
+    <div class="trainer">
+      <figure class="circle-figure">
+        <svg id="family-circle" viewBox="0 0 600 600" role="img" aria-labelledby="circle-title circle-description">
+          <title id="circle-title">C major chord family</title>
+          <desc id="circle-description">Six chords and their scale numbers in fixed circle-of-fifths positions.</desc>
+          <circle class="orbit" cx="300" cy="300" r="242"/>
+          <circle class="orbit inner-orbit" cx="300" cy="300" r="155"/>
+          <g id="circle-guides" aria-hidden="true"></g>
+          <g id="circle-chords"></g>
+          <text id="circle-home" class="circle-home" x="300" y="290" text-anchor="middle">C major</text>
+          <text class="circle-centre-caption" x="300" y="318" text-anchor="middle">CHORD FAMILY</text>
+        </svg>
+        <div id="diminished" class="diminished" hidden></div>
+        <figcaption>Major chords outside · minor chords inside<br/><span>The circle stays still. Only the numbers change.</span></figcaption>
+      </figure>
+      <div class="trainer-content">
+        <div class="round-progress"><span id="round-label">FIRST, LOOK AT THE PATTERN</span><span id="round-count"></span></div>
+        <div id="round-dots" class="round-dots" aria-hidden="true"></div>
+        <h2 id="prompt" tabindex="-1">Six chords. One shape.</h2>
+        <p id="instruction" class="trainer-instruction"></p>
+        <div id="study-pattern" class="study-pattern"></div>
+        <div id="choices" class="trainer-choices" role="group" aria-label="Choose your answer" hidden></div>
+        <p id="feedback" class="trainer-feedback" role="status" aria-live="polite"></p>
+        <div class="trainer-actions">
+          <button id="primary" type="button" class="trainer-primary">Try a round →</button>
+          <button id="hint" type="button" class="trainer-text" hidden>Peek at the pattern</button>
+          <button id="secondary" type="button" class="trainer-text" hidden>Study again</button>
+        </div>
+        <p id="learning-note" class="learning-note"></p>
       </div>
     </div>
+    <details class="keys-help" id="key-help">
+      <summary>About numbers &amp; alternate key names</summary>
+      <p>A number tells you which scale note a chord is built on. The chord name tells you its quality: Am is minor; Bdim is diminished. In Roman numerals, major chords use uppercase and minor chords use lowercase.</p>
+      <p>Major pattern: outer <strong>4–1–5</strong>, inner <strong>2–6–3</strong>. Natural-minor pattern: outer <strong>6–3–7</strong>, inner <strong>4–1–5</strong>. Read each arc anticlockwise to clockwise around the highlighted family.</p>
+      <p>The bottom of the circle has shared positions: <strong>B = C♭, F♯ = G♭, C♯ = D♭</strong>. Their relative minors are G♯m/A♭m, D♯m/E♭m and A♯m/B♭m. The exercise always uses the spelling that belongs to your key.</p>
+      <p>After you can recall and rebuild the six-chord family, you’ll add the diminished chord: number 7 in major, number 2 in natural minor. Minor here means natural minor, with a minor chord 5.</p>
+    </details>
+    <p id="storage" class="storage-note" role="status"></p>
+    <noscript><p>Enable JavaScript to use the chord family trainer.</p></noscript>
   </section>
-  <section id="summary" class="keys-panel" hidden><h2 tabindex="-1" id="summary-title">Session complete.</h2><p id="score"></p><p id="recommendation"></p><div class="keys-actions"><button id="continue" class="keys-primary">Continue journey</button><button id="again">Practice this stage again</button><button id="retry" hidden>Retry missed questions</button></div></section>
-  <details class="keys-guide"><summary>How to read the circle and its numbers</summary>
-    <p>Start at the outer major key and take its left neighbour, itself, and its right neighbour. Those three columns and their inner relative minors give six chords. The diminished chord sits separately below the circle.</p>
-    <p><strong>Major, left → centre → right:</strong> outer 4 · 1 · 5 (IV · I · V); inner 2m · 6m · 3m (ii · vi · iii). Add 7° (vii°).</p>
-    <p><strong>Natural minor, around its relative major:</strong> outer 6 · 3 · 7 (VI · III · VII); inner 4m · 1m · 5m (iv · i · v). Add 2° (ii°).</p>
-    <p>A plain number means major, m means minor, and ° means diminished. Roman numerals use lowercase for minor. “Chord 4” means the chord built on scale note 4, not the fourth position clockwise.</p>
-    <p>Example: G major and E minor share chords. C is 4 (IV) in G, but 6 (VI) in Em. Natural minor uses a minor v; the major V common in minor songs is a later harmonic-minor variation.</p>
-    <p><strong>Enharmonic keys:</strong> the bottom positions have two names for the same pitches. The outer pairs are B/C♭, F♯/G♭ and C♯/D♭. Their inner relatives are G♯m/A♭m, D♯m/E♭m and A♯m/B♭m. These are shared positions, not extra steps around the circle.</p>
-    <p>Within a chord family, names follow the selected key: F♯ major uses A♯m, while G♭ major uses B♭m at the same position. Numbers refer to the correctly spelled scale; choose either shared position and it counts as the same chord. Hover a shared position to see both names.</p>
-    <p>Your journey: C/Am → G/Em → D/Bm → F/Dm → A/F♯m → E/C♯m. F major, F♯ minor and C♯ minor support your priority keys. Positions stay fixed throughout. Six-chord families may wrap across the top of the circle.</p>
-  </details>
-  <p id="storage" class="keys-help" role="status"></p>
-  <noscript>Enable JavaScript to practise the circle of fifths.</noscript>
-</section>
 </Layout>
 <script src="../../scripts/circle.ts"></script>
