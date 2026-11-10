@@ -3,19 +3,30 @@ import Layout from '../../layouts/Layout.astro';
 import { ROOT_OPTIONS } from '../../lib/harmony';
 import '../../styles/intervals.css';
 ---
-<Layout title="Know your intervals" description="Recognize one ascending interval across all twelve tonics with quick, silent practice rounds.">
+<Layout title="Relatives, fourths & fifths" description="Find relative major and minor keys and perfect fourths and fifths. Practise your common keys or every standard key signature.">
   <a class="back-link" href="/">← All exercises</a>
   <section class="interval-trainer" data-intervals aria-labelledby="interval-title">
-    <h1 id="interval-title">Know your intervals.</h1>
-    <div id="interval-round">
-      <div class="interval-fixed"><span class="interval-label">ASCENDING INTERVAL</span><h2 id="interval-name">—</h2></div>
-      <div class="interval-progress"><span id="interval-progress">1 / 12</span><span id="interval-score">0 correct</span></div>
-      <div class="tonic-pedal"><span class="interval-label">TONIC</span><strong id="interval-tonic" aria-live="polite" aria-atomic="true">—</strong></div>
-      <fieldset class="interval-answers"><legend>Choose the note above this tonic</legend><div class="interval-keypad">{ROOT_OPTIONS.map((notes, pitch) => <button type="button" data-pitch={pitch}>{notes.join(' / ')}</button>)}</div></fieldset>
-      <p id="interval-feedback" class="interval-feedback" role="status" aria-live="polite"></p>
+    <h1 id="interval-title">Relatives, fourths &amp; fifths.</h1>
+    <div class="interval-settings">
+      <label for="interval-scope">Keys<select id="interval-scope"><option value="common">Common keys · your 9</option><option value="all">All keys · including enharmonic spellings</option></select></label>
+      <label for="interval-practice">Practise<select id="interval-practice"><option value="mixed">Mix all three</option><option value="relative">Relative major / minor</option><option value="fourth">Perfect fourths</option><option value="fifth">Perfect fifths</option></select></label>
     </div>
-    <section id="interval-summary" class="interval-summary" hidden><h2 tabindex="-1" id="interval-summary-title">Round complete.</h2><p id="interval-summary-score"></p><p id="interval-summary-name"></p><button id="interval-again" type="button">New round</button></section>
-    <noscript><p>Enable JavaScript to practice intervals.</p></noscript>
+    <p id="interval-scope-note" class="interval-help"></p>
+    <div id="interval-round">
+      <div class="interval-progress"><span id="interval-progress"></span><span id="interval-score">0 correct</span></div>
+      <div class="tonic-pedal"><span id="interval-source-label" class="interval-label">STARTING KEY</span><strong id="interval-tonic">—</strong><span id="interval-mode" class="tonic-mode"></span></div>
+      <div class="interval-question"><span id="interval-kind" class="interval-label"></span><h2 id="interval-prompt" tabindex="-1"></h2></div>
+      <fieldset class="interval-answers"><legend id="interval-answer-label">Choose the note</legend><div class="interval-keypad">{ROOT_OPTIONS.map((notes, pitch) => <button type="button" data-pitch={pitch}>{notes.join(' / ')}</button>)}</div></fieldset>
+      <div id="interval-feedback" class="interval-feedback" role="status" aria-live="polite"></div>
+      <button id="interval-next" class="interval-primary" type="button" hidden>Next question →</button>
+    </div>
+    <section id="interval-summary" class="interval-summary" hidden>
+      <h2 tabindex="-1" id="interval-summary-title">Round complete.</h2><p id="interval-summary-score"></p><p id="interval-summary-name"></p>
+      <div class="interval-actions"><button id="interval-again" class="interval-primary" type="button">New round</button><button id="interval-retry" type="button" hidden>Retry missed answers</button></div>
+    </section>
+    <p class="interval-help">Fourths and fifths are always measured upwards. Equivalent sharp/flat answers count; feedback shows the spelling for the question.</p>
+    <p id="interval-storage" class="interval-help" role="status"></p>
+    <noscript><p>Enable JavaScript to practise key relationships.</p></noscript>
   </section>
 </Layout>
 <script src="../../scripts/intervals.ts"></script>
