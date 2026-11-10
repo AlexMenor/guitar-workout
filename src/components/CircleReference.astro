@@ -1,0 +1,76 @@
+---
+import { NODES, PRIORITY } from '../lib/circle';
+const point = (radius: number, angle: number) => {
+  const radians = (angle - 90) * Math.PI / 180;
+  return { x: 280 + radius * Math.cos(radians), y: 280 + radius * Math.sin(radians) };
+};
+---
+<button id="circle-reference-open" class="circle-shortcut" type="button" aria-haspopup="dialog" aria-controls="circle-reference" hidden>
+  <span aria-hidden="true">◷</span> Circle of fifths
+</button>
+<dialog id="circle-reference" aria-labelledby="circle-reference-title" aria-describedby="circle-reference-description">
+  <div class="reference-heading">
+    <h2 id="circle-reference-title">Circle of fifths</h2>
+    <button id="circle-reference-close" class="reference-close" type="button" autofocus aria-label="Close circle of fifths">×</button>
+  </div>
+  <p id="circle-reference-description">Major keys outside, relative minor keys inside. Each pair shares the same key signature.</p>
+  <p class="reference-legend"><span aria-hidden="true">★</span> Your common keys: E, A, D, G, C major · Em, Am, Bm, Dm.</p>
+  <svg class="reference-wheel" viewBox="0 0 560 560" role="img" aria-labelledby="reference-wheel-title reference-wheel-description">
+    <title id="reference-wheel-title">Full circle of fifths, with relative minor keys</title>
+    <desc id="reference-wheel-description">Clockwise: {NODES.filter(n => n.mode === 'major').map(n => {
+      const minor = NODES.find(m => m.index === n.index && m.mode === 'minor')!;
+      return `${n.aliases.join(' or ')} major with ${minor.aliases.join(' or ')} minor`;
+    }).join('; ')}. Move clockwise for an ascending fifth, anticlockwise for an ascending fourth. Alternate spellings in each position sound the same.</desc>
+    <circle cx="280" cy="280" r="266" fill="#e8c5a5" />
+    <circle cx="280" cy="280" r="192" fill="#dfe3d2" />
+    {Array.from({ length: 12 }, (_, index) => {
+      const inner = point(112, index * 30 - 15);
+      const outer = point(266, index * 30 - 15);
+      return <line x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke="#8c7d6655" />;
+    })}
+    <circle cx="280" cy="280" r="192" fill="none" stroke="#8c7d6655" />
+    <circle cx="280" cy="280" r="112" fill="#f7f4e9" />
+    {NODES.map(node => {
+      const position = point(node.mode === 'major' ? 229 : 151, node.index * 30);
+      return <g aria-hidden="true"><text x={position.x} y={position.y} class:list={['wheel-key', node.mode]}>
+        {node.aliases.map((alias, index) => <tspan x={position.x} dy={index === 0 ? (node.aliases.length > 1 ? '-.4em' : '.35em') : '1.15em'}>{alias}{node.mode === 'minor' ? 'm' : ''}</tspan>)}
+      </text>{PRIORITY.includes(node.id) && <text class="wheel-star" x={position.x + (node.mode === 'major' ? 16 : 23)} y={position.y - 7}>★</text>}</g>;
+    })}
+    <text x="280" y="267" class="wheel-center" aria-hidden="true">↻ Fifths</text>
+    <text x="280" y="303" class="wheel-center" aria-hidden="true">↺ Fourths</text>
+  </svg>
+  <div class="reference-tips">
+    <p><strong>One step around</strong><br />Clockwise = up a fifth. Anticlockwise = up a fourth. Stay on the same ring.</p>
+    <p><strong>One step across</strong><br />Move between the rings for the relative key: C major ↔ A minor, for example.</p>
+  </div>
+  <p class="reference-note">The three positions at the bottom show both enharmonic spellings. Read each pair in order: B ↔ G♯m, C♭ ↔ A♭m, and so on.</p>
+</dialog>
+<script>
+  const open = document.querySelector<HTMLButtonElement>('#circle-reference-open')!;
+  const dialog = document.querySelector<HTMLDialogElement>('#circle-reference')!;
+  const close = document.querySelector<HTMLButtonElement>('#circle-reference-close')!;
+  open.hidden = false;
+  open.addEventListener('click', () => dialog.showModal());
+  close.addEventListener('click', () => dialog.close());
+  // Only dismiss clicks outside the panel, not whitespace within it.
+  dialog.addEventListener('click', event => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+</script>
+<style>
+  .circle-shortcut{display:flex;align-items:center;gap:8px;flex-shrink:0;max-width:145px;min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:#f7f4e9;font:inherit;font-size:13px;line-height:1.25;color:var(--accent);cursor:pointer;text-align:left}
+  .circle-shortcut[hidden]{display:none}.circle-shortcut span{font-size:24px}.circle-shortcut:hover{border-color:var(--accent)}
+  button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  dialog{width:640px;max-width:calc(100% - 24px);max-height:calc(100dvh - 32px);padding:22px;border:1px solid var(--line);border-radius:16px;background:#f7f4e9;color:#2e2924;box-shadow:0 20px 80px #20170d40;overscroll-behavior:contain}
+  dialog::backdrop{background:#20170d99} :global(body:has(#circle-reference[open])){overflow:hidden}
+  .reference-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  h2{font:400 30px/1.2 Georgia,serif;margin:0}
+  .reference-close{flex-shrink:0;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:transparent;font:28px/1 Arial;color:inherit;cursor:pointer}
+  p{font-size:14px;line-height:1.5;margin:10px 0;color:#625747}
+  .reference-wheel{display:block;width:100%;max-width:520px;margin:8px auto}
+  .wheel-key{text-anchor:middle;font-family:Arial,Helvetica,sans-serif;font-weight:600;fill:#493120;font-size:26px}.wheel-key.minor{fill:#3e5137;font-size:22px}.wheel-center{text-anchor:middle;font-size:23px;fill:#625747}
+  .wheel-star{fill:#98421f;font-size:15px}.reference-legend{font-size:12px}.reference-legend span{color:#98421f}
+  .reference-tips{display:grid;grid-template-columns:1fr 1fr;gap:20px}.reference-tips strong{color:#2e2924}.reference-note{border-top:1px solid var(--line);padding-top:12px;font-size:12px;margin-bottom:0}
+  @media(max-width:540px){.circle-shortcut{max-width:112px;padding:8px;font-size:12px;gap:6px}dialog{padding:14px;max-width:calc(100% - 16px)}h2{font-size:26px}.reference-tips{grid-template-columns:1fr;gap:0}.reference-tips p{margin:6px 0}.reference-wheel{max-width:none}}
+</style>
