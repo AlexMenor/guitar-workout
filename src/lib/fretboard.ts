@@ -1,8 +1,8 @@
 export const NOTES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 const FLAT_NOTES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
 
-export function spellNote(pitch: number, random: () => number = Math.random) {
-  return (random() < 0.5 ? NOTES : FLAT_NOTES)[pitch]!;
+export function spellNote(pitch: number, includeFlats = false, random: () => number = Math.random) {
+  return (includeFlats && random() >= 0.5 ? FLAT_NOTES : NOTES)[pitch]!;
 }
 export const ACCIDENTALS = [1, 3, 6, 8, 10];
 export const STRINGS = ['Low E', 'A', 'D', 'G', 'B', 'High E'];

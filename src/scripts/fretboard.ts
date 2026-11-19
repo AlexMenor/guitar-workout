@@ -7,6 +7,7 @@ const stop = element<HTMLButtonElement>('stop');
 const tempo = element<HTMLInputElement>('tempo');
 const duration = element<HTMLSelectElement>('duration');
 const notePool = element<HTMLSelectElement>('note-pool');
+const includeFlats = element<HTMLInputElement>('include-flats');
 const modes = element<HTMLFieldSetElement>('mode-options');
 const clock = element('session-clock');
 const message = element('message');
@@ -22,7 +23,8 @@ let audio: AudioContext | undefined;
 let starting = false;
 function makePicker() { return createNotePicker(Math.random, notePool.value === 'accidentals' ? ACCIDENTALS : undefined); }
 let pick = makePicker();
-let notes = [spellNote(pick()), spellNote(pick())];
+function drawNote() { return spellNote(pick(), includeFlats.checked); }
+let notes = [drawNote(), drawNote()];
 let elapsedBefore = 0;
 let completedBefore = 0;
 let completed = 0;
@@ -42,7 +44,7 @@ const oscillators = new Set<OscillatorNode>();
 function timed() { return root.querySelector<HTMLInputElement>('input[name="mode"]:checked')!.value === 'timed'; }
 function limit() { return timed() ? Number(duration.value) : Infinity; }
 function noteAt(round: number) {
-  while (notes.length <= round) notes.push(spellNote(pick()));
+  while (notes.length <= round) notes.push(drawNote());
   return notes[round]!;
 }
 function showNotes(round = 0) {
@@ -59,6 +61,7 @@ function settings() {
   modes.disabled = active || state === 'paused';
   duration.disabled = modes.disabled;
   notePool.disabled = modes.disabled;
+  includeFlats.disabled = modes.disabled;
   element('duration-field').hidden = !timed();
   start.disabled = starting;
   start.textContent = starting ? 'Starting…' : state === 'running' ? 'Pause' : state === 'paused' ? 'Resume practice' : state === 'finished' ? 'Practice again' : 'Start practice';
@@ -186,7 +189,7 @@ async function begin() {
     if (audio.state !== 'running') throw new Error('Audio unavailable');
     if (state !== 'paused') {
       pick = makePicker();
-      notes = [spellNote(pick()), spellNote(pick())];
+      notes = [drawNote(), drawNote()];
       elapsedBefore = completedBefore = completed = displayedRound = 0;
     }
     interval = 60 / Number(tempo.value);
@@ -216,11 +219,13 @@ stop.addEventListener('click', finish);
 tempo.addEventListener('input', () => { element('tempo-output').textContent = tempo.value; });
 root.querySelectorAll('input[name="mode"]').forEach(input => input.addEventListener('change', () => { settings(); progress(); }));
 duration.addEventListener('change', () => progress());
-notePool.addEventListener('change', () => {
+function refreshNotes() {
   pick = makePicker();
-  notes = [spellNote(pick()), spellNote(pick())];
+  notes = [drawNote(), drawNote()];
   showNotes();
-});
+}
+notePool.addEventListener('change', refreshNotes);
+includeFlats.addEventListener('change', refreshNotes);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (starting) generation++;
