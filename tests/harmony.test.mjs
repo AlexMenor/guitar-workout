@@ -26,6 +26,14 @@ test('all material is available immediately and reverse questions are optional',
  assert.equal(makeCards({...base,reverse:true}).length,510);
  assert(makeCards({mode:'minor',kind:'progression',reverse:true}).every(c=>c.key.mode==='minor'&&c.direction==='progression'));
 });
+test('common scales include exactly the selected five major and four minor keys for every question kind',()=>{
+ const expected=['major:E','major:A','major:D','major:G','major:C','minor:E','minor:A','minor:B','minor:D'].sort();
+ for(const kind of ['single','progression','mixed']){
+  const cards=makeCards({mode:'common',kind,reverse:true});
+  assert.deepEqual([...new Set(cards.map(c=>c.key.id))].sort(),expected);
+  assert.equal(cards.length,9*(kind==='single'?14:kind==='progression'?3:17));
+ }
+});
 test('misses become due immediately and successful reviews expand across days',()=>{
  const now=1000;let review=reviewAnswer(undefined,false,now);assert.equal(review.due,now);assert.equal(review.streak,0);
  review=reviewAnswer(review,true,now);assert.equal(review.due,now+86400000);

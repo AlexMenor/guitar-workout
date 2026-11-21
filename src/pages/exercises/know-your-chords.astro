@@ -8,7 +8,7 @@ import '../../styles/harmony.css';
   <section class="harmony" data-harmony aria-labelledby="harmony-title">
     <h1 id="harmony-title">Know your chords.</h1>
     <div class="harmony-settings">
-      <label for="scale-mode">Scales<select id="scale-mode"><option value="both">Major + natural minor</option><option value="major">Major</option><option value="minor">Natural minor</option></select></label>
+      <label for="scale-mode">Scales<select id="scale-mode"><option value="common" selected>E, A, D, G, C major · Em, Am, Bm, Dm</option><option value="both">Major + natural minor</option><option value="major">Major</option><option value="minor">Natural minor</option></select></label>
       <label for="question-kind">Questions<select id="question-kind"><option value="mixed">Chords + progressions</option><option value="single">Single chords</option><option value="progression">Progressions</option></select></label>
       <label class="reverse-toggle"><input id="reverse-mode" type="checkbox" /> Include reverse questions</label>
     </div>
@@ -29,7 +29,7 @@ import '../../styles/harmony.css';
     </div>
     <section id="session-summary" class="harmony-pedal session-summary" hidden><h2 id="summary-title" tabindex="-1">Session complete.</h2><p id="summary-score"></p><p id="summary-review"></p><div class="answer-actions"><button id="retry-missed" class="harmony-primary" type="button" hidden>Retry missed questions</button><button id="practice-again" type="button">New session</button></div></section>
     <p id="storage-message" class="harmony-help" role="status"></p>
-    <p class="harmony-help">All 15 standard key signatures in each mode. Minor means natural minor. No timer, no sound.</p>
+    <p class="harmony-help">Start with E, A, D, G, C major and Em, Am, Bm, Dm, or choose from all 15 standard key signatures in each mode. Minor means natural minor. No timer, no sound.</p>
     <noscript><p>Enable JavaScript to practice chords.</p></noscript>
   </section>
 </Layout>

@@ -33,7 +33,7 @@ try {
         if (v && ['streak', 'due', 'attempts', 'correct'].every(k => typeof v[k] === 'number' && Number.isFinite(v[k]) && (v[k] as number) >= 0)) reviews[id] = v as unknown as Reviews[string];
       }
     }
-    if (['both', 'major', 'minor'].includes(saved.preferences?.mode)) mode.value = saved.preferences.mode;
+    if (['common', 'both', 'major', 'minor'].includes(saved.preferences?.mode)) mode.value = saved.preferences.mode;
     if (['single', 'progression', 'mixed'].includes(saved.preferences?.kind)) kind.value = saved.preferences.kind;
     reverse.checked = saved.preferences?.reverse === true;
   }
