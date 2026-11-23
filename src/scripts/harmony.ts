@@ -61,9 +61,8 @@ function renderQuestion(focus = false) {
   const value = chord(card.key, card.degrees[step]!);
   const backward = card.direction === 'reverse';
   el('root-field').hidden = backward;
-  el('quality-field').hidden = backward;
   el('degree-field').hidden = !backward;
-  el('recall-hint').textContent = backward ? 'Recall its degree, then choose the Roman numeral.' : 'Think of the chord first, then enter your answer.';
+  el('recall-hint').textContent = backward ? 'Recall its degree, then choose the Roman numeral.' : 'Recall the root note. The Roman numeral already gives the chord quality.';
   el('question-prompt').textContent = backward ? `${chordName(value)} is which chord?` : card.direction === 'progression' ? 'Build this progression.' : `What is the ${value.numeral} chord?`;
   const slots = el('progression-slots');
   slots.replaceChildren();
@@ -71,17 +70,17 @@ function renderQuestion(focus = false) {
   if (!slots.hidden) {
     card.degrees.forEach((degree, i) => {
       const span = document.createElement('span');
-      span.textContent = i < step ? chordName(chord(card.key, degree)) : chord(card.key, degree).numeral;
-      span.className = i === step ? 'active' : i < step ? 'done' : '';
+      span.textContent = degree === 0 || i < step ? chordName(chord(card.key, degree)) : chord(card.key, degree).numeral;
+      span.className = i === step ? 'active' : degree === 0 || i < step ? 'done' : '';
       if (i === step) span.setAttribute('aria-current', 'step');
       slots.append(span);
     });
-    el('recall-hint').textContent = `Chord ${step + 1} of ${card.degrees.length}: enter ${value.numeral}.`;
+    el('recall-hint').textContent = `Choose the root note for ${value.numeral}. Tonic chords are filled in.`;
   }
   const degrees = el('degree-options');
   degrees.replaceChildren();
   if (backward) {
-    for (let i = 0; i < 7; i++) {
+    for (let i = 1; i < 7; i++) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'radio'; input.name = 'degree'; input.value = String(i);
@@ -98,7 +97,7 @@ function nextCard(focus = false) {
   else if (retry >= 0) card = retries.splice(retry, 1)[0]!.card;
   else card = chooseCard(cards, reviews, seen, Date.now());
   seen.add(card.id);
-  step = 0; cardCorrect = true;
+  step = card.degrees.findIndex(degree => degree !== 0); cardCorrect = true;
   renderQuestion(focus);
 }
 function showFeedback(revealed = false) {
@@ -106,12 +105,12 @@ function showFeedback(revealed = false) {
   const expected = chord(card.key, card.degrees[step]!);
   const data = new FormData(form);
   const backward = card.direction === 'reverse';
-  if (!revealed && (backward ? !data.has('degree') : !data.has('root') || !data.has('quality'))) {
-    el('answer-error').textContent = backward ? 'Choose a chord degree.' : 'Choose a root note and chord quality.';
+  if (!revealed && (backward ? !data.has('degree') : !data.has('root'))) {
+    el('answer-error').textContent = backward ? 'Choose a chord degree.' : 'Choose a root note.';
     return;
   }
   const selectedRoot = String(data.get('root') ?? '');
-  const right = !revealed && (backward ? Number(data.get('degree')) === card.degrees[step] : pitch(selectedRoot) === pitch(expected.root) && data.get('quality') === expected.quality);
+  const right = !revealed && (backward ? Number(data.get('degree')) === card.degrees[step] : pitch(selectedRoot) === pitch(expected.root));
   const alternateSpelling = right && !backward && !ROOT_OPTIONS.find(notes => notes[0] === selectedRoot)?.includes(expected.root);
   cardCorrect &&= right;
   awaitingNext = true;
@@ -129,7 +128,7 @@ function showFeedback(revealed = false) {
     const numeral = document.createElement('small'); numeral.textContent = chord(card.key, i).numeral;
     item.append(numeral, document.createTextNode(note)); explanation.append(item);
   });
-  const lastStep = step === card.degrees.length - 1;
+  const lastStep = !card.degrees.slice(step + 1).some(degree => degree !== 0);
   el('next-question').textContent = !lastStep ? 'Next chord' : answered === sessionSize - 1 ? (retryDeck ? 'Finish retry' : 'Finish session') : 'Next question';
   if (lastStep) {
     reviews[card.id] = reviewAnswer(reviews[card.id], cardCorrect, Date.now());
@@ -139,7 +138,8 @@ function showFeedback(revealed = false) {
 }
 function completeQuestion() {
   if (!awaitingNext) return;
-  if (step < card.degrees.length - 1) { step++; renderQuestion(true); return; }
+  const nextStep = card.degrees.findIndex((degree, i) => i > step && degree !== 0);
+  if (nextStep >= 0) { step = nextStep; renderQuestion(true); return; }
   answered++;
   if (cardCorrect) correctCount++;
   else {
@@ -156,7 +156,7 @@ function completeQuestion() {
     const retryButton = el<HTMLButtonElement>('retry-missed');
     retryButton.hidden = missed.size === 0;
     retryButton.textContent = `Retry ${missed.size} missed ${missed.size === 1 ? 'question' : 'questions'}`;
-    el('summary-score').textContent = `${correctCount} of ${sessionSize} correct without revealing an answer. Progressions count when every chord is correct.`;
+    el('summary-score').textContent = `${correctCount} of ${sessionSize} correct without revealing an answer. Progressions count when every requested root note is correct.`;
     const due = cards.filter(c => reviews[c.id] && reviews[c.id]!.due <= Date.now()).length;
     el('summary-review').textContent = due ? `${due} ${due === 1 ? 'question is' : 'questions are'} ready to revisit. Missed questions return sooner; correct answers are spaced across later days.` : 'Correct answers will return on later days. You can keep practicing now, too.';
     el('summary-title').focus();

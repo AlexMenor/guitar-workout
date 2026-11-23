@@ -21,9 +21,9 @@ test('key signatures retain E sharp, C flat, and minor v rather than harmonic-mi
 });
 test('all material is available immediately and reverse questions are optional',()=>{
  const base={mode:'both',kind:'mixed',reverse:false};const cards=makeCards(base);
- assert.equal(cards.length,300);assert.equal(new Set(cards.map(c=>c.id)).size,cards.length);
+ assert.equal(cards.length,270);assert.equal(new Set(cards.map(c=>c.id)).size,cards.length);
  assert(!cards.some(c=>c.direction==='reverse'));
- assert.equal(makeCards({...base,reverse:true}).length,510);
+ assert.equal(makeCards({...base,reverse:true}).length,450);
  assert(makeCards({mode:'minor',kind:'progression',reverse:true}).every(c=>c.key.mode==='minor'&&c.direction==='progression'));
 });
 test('common scales include exactly the selected five major and four minor keys for every question kind',()=>{
@@ -31,7 +31,15 @@ test('common scales include exactly the selected five major and four minor keys 
  for(const kind of ['single','progression','mixed']){
   const cards=makeCards({mode:'common',kind,reverse:true});
   assert.deepEqual([...new Set(cards.map(c=>c.key.id))].sort(),expected);
-  assert.equal(cards.length,9*(kind==='single'?14:kind==='progression'?3:17));
+  assert.equal(cards.length,9*(kind==='single'?12:kind==='progression'?3:15));
+ }
+});
+test('single-chord questions exclude the tonic in both directions and keep every other degree',()=>{
+ for(const k of KEYS){
+  const cards=makeCards({mode:k.mode,kind:'single',reverse:true}).filter(c=>c.key.id===k.id);
+  for(const direction of ['forward','reverse']){
+   assert.deepEqual(cards.filter(c=>c.direction===direction).map(c=>c.degrees),[[1],[2],[3],[4],[5],[6]]);
+  }
  }
 });
 test('misses become due immediately and successful reviews expand across days',()=>{

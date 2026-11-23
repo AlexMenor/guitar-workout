@@ -40,7 +40,7 @@ export function makeCards(preferences: Preferences): Card[] {
   return KEYS.filter(key => preferences.mode === 'common' ? COMMON_KEY_IDS.has(key.id) : preferences.mode === 'both' || key.mode === preferences.mode).flatMap(key => {
     const cards: Card[] = [];
     if (preferences.kind !== 'progression') {
-      for (let degree = 0; degree < 7; degree++) {
+      for (let degree = 1; degree < 7; degree++) {
         for (const direction of (preferences.reverse ? ['forward', 'reverse'] : ['forward']) as Direction[]) {
           cards.push({ id: `${key.id}:${direction}:${degree}`, key, direction, degrees: [degree] });
         }
