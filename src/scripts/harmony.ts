@@ -1,3 +1,4 @@
+import { sessionSettings, questionEntrance } from '../lib/practice-ui';
 import { ROOT_OPTIONS, chord, chordName, chooseCard, keyName, makeCards, pitch, reviewAnswer, scale, type Card, type Preferences, type Reviews } from '../lib/harmony';
 const root = document.querySelector<HTMLElement>('[data-harmony]')!;
 function el<T extends HTMLElement = HTMLElement>(id: string) { return root.querySelector<T>(`#${id}`)!; }
@@ -20,8 +21,10 @@ let cards: Card[] = [];
 let sessionSize = 10;
 let retryDeck: Card[] | null = null;
 let missed = new Map<string, Card>();
-function preferences(): Preferences { return { mode: mode.value as Preferences['mode'], kind: kind.value as Preferences['kind'], reverse: reverse.checked }; }
-function storageWarning() { el('storage-message').textContent = storageAvailable ? 'Review progress is saved on this device, including offline.' : 'Storage is unavailable. You can practice, but progress will only last for this visit.'; }
+function readPreferences(): Preferences { return { mode: mode.value as Preferences['mode'], kind: kind.value as Preferences['kind'], reverse: reverse.checked }; }
+let activePreferences: Preferences;
+function preferences() { return activePreferences; }
+function storageWarning() { el('storage-message').textContent = storageAvailable ? 'Review progress saved on this device.' : 'Storage is unavailable. You can practice, but progress will only last for this visit.'; }
 try {
   const raw = localStorage.getItem(storageKey);
   let saved;
@@ -38,6 +41,7 @@ try {
     reverse.checked = saved.preferences?.reverse === true;
   }
 } catch { storageAvailable = false; }
+activePreferences = readPreferences();
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, reviews, preferences: preferences() })); storageAvailable = true; }
   catch { storageAvailable = false; }
@@ -46,12 +50,18 @@ function persist() {
 function updateProgress() {
   el('question-progress').textContent = `${retryDeck ? 'Retry' : 'Question'} ${Math.min(answered + 1, sessionSize)} of ${sessionSize}`;
   const due = cards.filter(c => reviews[c.id] && reviews[c.id]!.due <= Date.now()).length;
-  el('review-status').textContent = due ? `${due} due for review` : 'All keys available';
+  el('review-status').textContent = due ? `${due} due for review` : `${correctCount} correct`;
 }
 function clearAnswer() {
   form.reset();
   el('feedback').hidden = true;
   form.hidden = false;
+  for (const input of form.querySelectorAll<HTMLInputElement>('input')) input.disabled = false;
+  for (const label of form.querySelectorAll('label')) label.classList.remove('correct', 'incorrect');
+  el('check-answer').hidden = false;
+  el('reveal-answer').hidden = false;
+  el('next-question').hidden = true;
+  el<HTMLDetailsElement>('chord-explanation').open = false;
   el('answer-error').textContent = '';
   awaitingNext = false;
 }
@@ -62,8 +72,14 @@ function renderQuestion(focus = false) {
   const backward = card.direction === 'reverse';
   el('root-field').hidden = backward;
   el('degree-field').hidden = !backward;
-  el('recall-hint').textContent = backward ? 'Recall its degree, then choose the Roman numeral.' : 'Recall the root note. The Roman numeral already gives the chord quality.';
-  el('question-prompt').textContent = backward ? `${chordName(value)} is which chord?` : card.direction === 'progression' ? 'Build this progression.' : `What is the ${value.numeral} chord?`;
+  el('recall-hint').textContent = backward ? 'Recall its degree, then choose the Roman numeral.' : 'Choose the root. The numeral gives the quality.';
+  const symbol = document.createElement('span');
+  symbol.className = `question-symbol${backward ? ' long-symbol' : ''}`;
+  symbol.textContent = backward ? `${value.root}${value.quality === 'minor' ? 'm' : value.quality === 'diminished' ? 'dim' : ''}` : value.numeral;
+  const question = document.createElement('span'); question.className = 'question-text';
+  question.textContent = backward ? 'Which degree is this chord?' : card.direction === 'progression' ? 'Find this chord’s root.' : 'Which root builds this chord?';
+  el('question-prompt').replaceChildren(symbol, document.createTextNode(' '), question);
+  questionEntrance(el('question-prompt'));
   const slots = el('progression-slots');
   slots.replaceChildren();
   slots.hidden = card.direction !== 'progression';
@@ -75,7 +91,7 @@ function renderQuestion(focus = false) {
       if (i === step) span.setAttribute('aria-current', 'step');
       slots.append(span);
     });
-    el('recall-hint').textContent = `Choose the root note for ${value.numeral}. Tonic chords are filled in.`;
+    el('recall-hint').textContent = 'Build the progression. Tonic chords are filled in.';
   }
   const degrees = el('degree-options');
   degrees.replaceChildren();
@@ -89,7 +105,7 @@ function renderQuestion(focus = false) {
     }
   }
   updateProgress();
-  if (focus) el('question-prompt').focus();
+  if (focus) el('question-prompt').focus({ preventScroll: true });
 }
 function nextCard(focus = false) {
   const retry = retries.findIndex(r => r.at <= answered);
@@ -114,8 +130,18 @@ function showFeedback(revealed = false) {
   const alternateSpelling = right && !backward && !ROOT_OPTIONS.find(notes => notes[0] === selectedRoot)?.includes(expected.root);
   cardCorrect &&= right;
   awaitingNext = true;
-  form.hidden = true;
+  for (const input of form.querySelectorAll<HTMLInputElement>('input')) {
+    const expectedInput = backward ? input.name === 'degree' && Number(input.value) === card.degrees[step] : input.name === 'root' && pitch(input.value) === pitch(expected.root);
+    input.closest('label')?.classList.toggle('correct', expectedInput);
+    input.closest('label')?.classList.toggle('incorrect', input.checked && !expectedInput);
+    input.disabled = true;
+  }
+  el('check-answer').hidden = true;
+  el('reveal-answer').hidden = true;
+  el('next-question').hidden = false;
   el('feedback').hidden = false;
+  el('feedback').dataset.correct = String(right);
+  el('feedback-short').textContent = right ? 'Keep the connection in mind.' : revealed ? 'Take a moment, then try the next one.' : 'The correct answer is highlighted above.';
   el('feedback-title').textContent = right ? alternateSpelling ? `Correct pitch — ${chordName(expected)}` : `Correct — ${backward ? expected.numeral : chordName(expected)}` : `${revealed ? 'Answer' : 'Not quite'} — ${backward ? expected.numeral : chordName(expected)}`;
   const degree = card.degrees[step]!;
   const ordinals = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'];
@@ -129,12 +155,12 @@ function showFeedback(revealed = false) {
     item.append(numeral, document.createTextNode(note)); explanation.append(item);
   });
   const lastStep = !card.degrees.slice(step + 1).some(degree => degree !== 0);
-  el('next-question').textContent = !lastStep ? 'Next chord' : answered === sessionSize - 1 ? (retryDeck ? 'Finish retry' : 'Finish session') : 'Next question';
+  el('next-question').textContent = !lastStep ? 'Next chord' : answered === sessionSize - 1 ? (retryDeck ? 'Finish retry' : 'Finish round') : 'Next question';
   if (lastStep) {
     reviews[card.id] = reviewAnswer(reviews[card.id], cardCorrect, Date.now());
     persist();
   }
-  el('feedback-title').focus();
+  el('next-question').focus({ preventScroll: true });
 }
 function completeQuestion() {
   if (!awaitingNext) return;
@@ -152,12 +178,13 @@ function completeQuestion() {
     el('question-panel').hidden = true;
     el('session-summary').hidden = false;
     el('question-progress').textContent = `${sessionSize} ${sessionSize === 1 ? 'question' : 'questions'} complete`;
-    el('summary-title').textContent = retryDeck ? 'Retry complete.' : 'Session complete.';
+    el('summary-title').textContent = retryDeck ? 'Retry complete.' : 'Round complete.';
     const retryButton = el<HTMLButtonElement>('retry-missed');
     retryButton.hidden = missed.size === 0;
     retryButton.textContent = `Retry ${missed.size} missed ${missed.size === 1 ? 'question' : 'questions'}`;
     el('summary-score').textContent = `${correctCount} of ${sessionSize} correct without revealing an answer. Progressions count when every requested root note is correct.`;
     const due = cards.filter(c => reviews[c.id] && reviews[c.id]!.due <= Date.now()).length;
+    el('summary-misses').textContent = missed.size ? `Revisit: ${Array.from(missed.values()).map(c => `${keyName(c.key)} (${c.degrees.filter(d => d !== 0).map(d => chord(c.key, d).numeral).join('–')})`).join(' · ')}.` : 'Every root recalled. A good connection to build on.';
     el('summary-review').textContent = due ? `${due} ${due === 1 ? 'question is' : 'questions are'} ready to revisit. Missed questions return sooner; correct answers are spaced across later days.` : 'Correct answers will return on later days. You can keep practicing now, too.';
     el('summary-title').focus();
   }
@@ -165,7 +192,7 @@ function completeQuestion() {
 function newSession() {
   answered = correctCount = 0; seen = new Set(); retries = [];
   sessionSize = 10; retryDeck = null; missed = new Map();
-  reverse.disabled = kind.value === 'progression';
+  reverse.disabled = activePreferences.kind === 'progression';
   cards = makeCards(preferences());
   el('question-panel').hidden = false;
   el('session-summary').hidden = true;
@@ -186,6 +213,13 @@ el('retry-missed').addEventListener('click', () => {
   el('session-summary').hidden = true;
   nextCard(true);
 });
-for (const setting of [mode, kind, reverse]) setting.addEventListener('change', () => { persist(); newSession(); });
+reverse.disabled = activePreferences.kind === 'progression';
+sessionSettings(el<HTMLDetailsElement>('chord-settings'), () => `${activePreferences.mode === 'common' ? 'Common keys' : activePreferences.mode === 'both' ? 'All keys' : activePreferences.mode === 'major' ? 'Major keys' : 'Minor keys'} · ${activePreferences.kind === 'mixed' ? 'Chords + progressions' : activePreferences.kind === 'single' ? 'Single chords' : 'Progressions'}${activePreferences.reverse && activePreferences.kind !== 'progression' ? ' · Both directions' : ''}`, () => { activePreferences = readPreferences(); persist(); newSession(); });
+kind.addEventListener('change', () => { reverse.disabled = kind.value === 'progression'; });
+root.addEventListener('keydown', event => {
+  if (event.key !== 'Enter' || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
+  if ((event.target as HTMLElement).closest('button, summary, a, details.session-settings[open]')) return;
+  event.preventDefault(); if (awaitingNext) completeQuestion(); else if (!el('question-panel').hidden) showFeedback();
+});
 newSession();
 storageWarning();

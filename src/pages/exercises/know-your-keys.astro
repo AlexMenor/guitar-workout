@@ -1,24 +1,17 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PracticeHeading from '../../components/PracticeHeading.astro';
+import SessionSettings from '../../components/SessionSettings.astro';
 import { FAMILIES } from '../../lib/circle';
 import '../../styles/circle.css';
 ---
 <Layout title="Know your keys" description="Memorise a chord family on the circle of fifths, then fill in its missing names and numbers.">
-  <a class="back-link" href="/">← All exercises</a>
-  <section class="keys" data-circle aria-labelledby="keys-title">
-    <div class="keys-heading">
-      <div><p class="keys-kicker">THE CHORD FAMILY TRAINER</p><h1 id="keys-title">Know your keys.</h1></div>
-      <label class="family-picker">Chord family
-        <select id="family">{FAMILIES.map(([major, minor], i) => <option value={i}>{major} major / {minor} minor</option>)}</select>
-      </label>
-    </div>
-    <div class="key-toolbar">
-      <div class="key-modes" role="group" aria-label="Choose the home key">
-        <button id="major-key" type="button" aria-pressed="true">C major</button>
-        <button id="minor-key" type="button" aria-pressed="false">A minor</button>
-      </div>
-      <span id="mode-note">Same chords. A different home.</span>
-    </div>
+  <section class="practice keys" data-circle aria-labelledby="keys-title">
+    <PracticeHeading title="Know your keys" id="keys-title" />
+    <SessionSettings id="family-settings" summary="C major · Chord families" apply="Apply & study this key">
+      <div class="settings-grid"><label for="family">Chord family<select id="family">{FAMILIES.map(([major, minor], i) => <option value={i}>{major} major / {minor} minor</option>)}</select></label><label for="home-mode">Home key<select id="home-mode"><option value="major">Major</option><option value="minor">Minor</option></select></label></div>
+    </SessionSettings>
+    <p id="mode-note" class="sr-only">Same chords. A different home.</p>
     <div class="trainer">
       <figure class="circle-figure">
         <svg id="family-circle" viewBox="0 0 600 600" role="img" aria-labelledby="circle-title circle-description">
@@ -29,28 +22,26 @@ import '../../styles/circle.css';
           <g id="circle-guides" aria-hidden="true"></g>
           <g id="circle-chords"></g>
           <text id="circle-home" class="circle-home" x="300" y="290" text-anchor="middle">C major</text>
-          <text class="circle-centre-caption" x="300" y="318" text-anchor="middle">CHORD FAMILY</text>
+          <text class="circle-centre-caption" x="300" y="318" text-anchor="middle">chord family</text>
         </svg>
         <div id="diminished" class="diminished" hidden></div>
         <figcaption>Major chords outside · minor chords inside<br/><span>The circle stays still. Only the numbers change.</span></figcaption>
       </figure>
-      <div class="trainer-content">
-        <div class="round-progress"><span id="round-label">FIRST, LOOK AT THE PATTERN</span><span id="round-count"></span></div>
+      <div class="trainer-question">
+        <div class="session-progress round-progress"><span id="round-label"></span><span id="round-count"></span></div>
         <div id="round-dots" class="round-dots" aria-hidden="true"></div>
-        <h2 id="prompt" tabindex="-1">Six chords. One shape.</h2>
+        <h2 id="prompt" tabindex="-1" aria-describedby="instruction round-count">Six chords. One shape.</h2>
         <p id="instruction" class="trainer-instruction"></p>
-        <div id="study-pattern" class="study-pattern"></div>
-        <div id="choices" class="trainer-choices" role="group" aria-label="Choose your answer" hidden></div>
+      </div>
+      <div class="trainer-response">
+        <div id="choices" class="answer-grid trainer-choices" role="group" aria-label="Choose your answer" hidden></div>
         <p id="feedback" class="trainer-feedback" role="status" aria-live="polite"></p>
-        <div class="trainer-actions">
-          <button id="primary" type="button" class="trainer-primary">Try a round →</button>
-          <button id="hint" type="button" class="trainer-text" hidden>Peek at the pattern</button>
-          <button id="secondary" type="button" class="trainer-text" hidden>Study again</button>
-        </div>
+        <div class="trainer-actions button-row"><button id="primary" type="button" class="primary-button">Try a round</button><button id="hint" type="button" class="text-button" hidden>Peek at the pattern</button><button id="secondary" type="button" class="text-button" hidden>Study again</button></div>
         <p id="learning-note" class="learning-note"></p>
+        <details id="pattern-detail" class="explanation"><summary>Read the pattern</summary><div id="study-pattern" class="study-pattern"></div></details>
       </div>
     </div>
-    <details class="keys-help" id="key-help">
+    <details class="practice-help keys-help" id="key-help">
       <summary>About numbers &amp; alternate key names</summary>
       <p>A number tells you which scale note a chord is built on. The chord name tells you its quality: Am is minor; Bdim is diminished. In Roman numerals, major chords use uppercase and minor chords use lowercase.</p>
       <p>Major pattern: outer <strong>4–1–5</strong>, inner <strong>2–6–3</strong>. Natural-minor pattern: outer <strong>6–3–7</strong>, inner <strong>4–1–5</strong>. Read each arc anticlockwise to clockwise around the highlighted family.</p>

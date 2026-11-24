@@ -1,9 +1,10 @@
+import { sessionSettings, questionEntrance, practiceKeyboard } from '../lib/practice-ui';
 import {
   FAMILIES, NODES, getKey, familyKeys, circleNode, nodeFor, shortChord,
   degreesFor, learnedCount, hiddenCount, makeRound, makeRebuild, answerChoices,
   hiddenDegrees, readProgress, type RecallCard,
 } from '../lib/circle';
-import { chord, reviewAnswer, type Key, type Mode } from '../lib/harmony';
+import { chord, reviewAnswer, type Key } from '../lib/harmony';
 
 const root = document.querySelector<HTMLElement>('[data-circle]')!;
 const el = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
@@ -124,15 +125,15 @@ function renderPattern() {
   });
 }
 function setPrimary(label: string) { el('primary').textContent = label; el('primary').hidden = false; }
+let refreshFamilySettings: (() => void) | undefined;
 function render() {
   root.dataset.practising = String(phase === 'practice' || phase === 'feedback');
-  const pair = familyKeys(familyIndex());
-  el<HTMLSelectElement>('family').value = String(familyIndex());
-  for (const mode of ['major', 'minor'] as const) {
-    const button = el<HTMLButtonElement>(`${mode}-key`);
-    button.textContent = keyLabel(pair[mode === 'major' ? 0 : 1]!);
-    button.setAttribute('aria-pressed', String(key.mode === mode));
+  el('round-label').parentElement!.hidden = phase === 'study';
+  if (!el<HTMLDetailsElement>('family-settings').open) {
+    el<HTMLSelectElement>('family').value = String(familyIndex());
+    el<HTMLSelectElement>('home-mode').value = key.mode;
   }
+  el('pattern-detail').hidden = phase !== 'study';
   el('mode-note').textContent = phase === 'practice' || phase === 'feedback' ? 'Changing key starts a fresh round.' : 'Same chords. A different home.';
   renderCircle();
   el('study-pattern').hidden = phase !== 'study';
@@ -148,7 +149,7 @@ function render() {
 
   if (phase === 'study') {
     renderPattern();
-    el('round-label').textContent = includeDim ? 'THE COMPLETE FAMILY' : 'FIRST, LOOK AT THE PATTERN';
+    el('round-label').textContent = '';
     el('prompt').textContent = includeDim ? 'One last chord.' : 'Six chords. One shape.';
     el('instruction').textContent = studyMessage || (includeDim
       ? `Add ${shortChord(key, key.mode === 'major' ? 6 : 1)}: chord ${key.mode === 'major' ? 7 : 2}. Its root matters too, so you’ll practise its name and number.`
@@ -157,7 +158,7 @@ function render() {
     el('learning-note').textContent = includeDim ? 'Same shape. Seven chords to recall.' : 'Study the shape, then fill in missing names and numbers. More labels disappear as you learn.';
   } else if (phase === 'practice' || phase === 'feedback') {
     const card = cards[index]!;
-    el('round-label').textContent = rebuild ? 'BUILD THE FAMILY' : retryCards.length ? 'REVISIT THE TRICKY ONES' : 'FILL THE GAP';
+    el('round-label').textContent = rebuild ? 'Build the family' : retryCards.length ? 'Retry round' : 'Recall the pattern';
     el('round-count').textContent = `${index + 1} / ${cards.length}`;
     cards.forEach((_, i) => { const dot = document.createElement('span'); dot.className = i < index ? 'complete' : i === index ? 'current' : ''; el('round-dots').append(dot); });
     el('prompt').textContent = card.kind === 'name' ? `What is chord ${card.degree + 1}?` : `${shortChord(key, card.degree)} is which number?`;
@@ -177,7 +178,7 @@ function render() {
     if (phase === 'feedback') setPrimary(index === cards.length - 1 ? 'See how you did →' : 'Next →');
     el('learning-note').textContent = peeked ? 'A peek helps you learn. This answer will return for practice.' : rebuild ? 'Recall the whole shape, one chord at a time.' : hideCount === 1 ? 'One label hidden. Start with the shape.' : `${hideCount} labels hidden. Keep the shape in mind.`;
   } else {
-    el('round-label').textContent = 'ROUND COMPLETE';
+    el('round-label').textContent = 'Round complete';
     el('prompt').textContent = `${score} of ${cards.length} recalled.`;
     const allSix = learnedCount(key, progress.reviews) === 12;
     const allSeven = learnedCount(key, progress.reviews, true) === 14;
@@ -207,6 +208,7 @@ function study(message = '', focus = false) {
   phase = 'study'; includeDim = dimUnlocked(); feedback = ''; studyMessage = message;
   peeked = false; masked.clear(); filled.clear();
   render(); persist();
+  refreshFamilySettings?.();
   if (focus) el('prompt').focus({ preventScroll: true });
 }
 function startRound(build = false, retry: RecallCard[] = []) {
@@ -216,14 +218,14 @@ function startRound(build = false, retry: RecallCard[] = []) {
   index = 0; score = 0; missed = []; filled = new Set();
   el<HTMLDetailsElement>('key-help').open = false;
   newQuestion();
-  root.querySelector('.trainer')!.scrollIntoView({ block: 'start', behavior: 'instant' });
+  el<HTMLDetailsElement>('family-settings').open = false;
 }
 function newQuestion() {
   phase = 'practice'; peeked = false; picked = ''; feedback = '';
   const card = cards[index]!;
   masked = rebuild ? new Set(degreesFor(key, includeDim)) : hiddenDegrees(card, hideCount, includeDim);
   options = answerChoices(card);
-  render(); el('prompt').focus({ preventScroll: true });
+  render(); questionEntrance(el('prompt')); el('prompt').focus({ preventScroll: true });
 }
 function answer(value: string) {
   if (phase !== 'practice') return;
@@ -249,6 +251,7 @@ function nextKey() {
   return key.mode === 'major' ? familyKeys(family)[1]! : familyKeys((family + 1) % FAMILIES.length)[0]!;
 }
 function switchKey(next: Key) {
+  el<HTMLDetailsElement>('family-settings').open = false;
   const sameFamily = circleNode(next).index === circleNode(key).index;
   const relative = familyKeys(familyIndex()).some(k => k.id === next.id) && next.mode !== key.mode;
   key = next;
@@ -273,11 +276,10 @@ el('secondary').addEventListener('click', () => study('', true));
 el<HTMLDetailsElement>('key-help').addEventListener('toggle', () => {
   if (el<HTMLDetailsElement>('key-help').open && phase === 'practice' && !peeked) { peeked = true; render(); }
 });
-el<HTMLSelectElement>('family').addEventListener('change', event => {
-  const family = Number((event.target as HTMLSelectElement).value);
-  switchKey(familyKeys(family)[0]!);
-});
-for (const mode of ['major', 'minor'] as Mode[]) el(`${mode}-key`).addEventListener('click', () => {
-  if (key.mode !== mode) switchKey(familyKeys(familyIndex())[mode === 'major' ? 0 : 1]!);
-});
 study();
+refreshFamilySettings = sessionSettings(el<HTMLDetailsElement>('family-settings'), () => `${keyLabel(key)} · Chord families`, () => {
+  const family = Number(el<HTMLSelectElement>('family').value);
+  const mode = el<HTMLSelectElement>('home-mode').value;
+  switchKey(familyKeys(family)[mode === 'major' ? 0 : 1]!);
+});
+practiceKeyboard(root, index => { if (phase === 'practice') el('choices').querySelectorAll<HTMLButtonElement>('button')[index]?.click(); }, () => { if (phase !== 'practice') el<HTMLButtonElement>('primary').click(); });

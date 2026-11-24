@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-23T17:48:31.582198Z",
+  "title": "Design System: Alex’s guitar workout",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm paper",
+        "tonalRamp": [
+          "oklch(15% 0.01365 92.98)",
+          "oklch(27% 0.01365 92.98)",
+          "oklch(39% 0.01365 92.98)",
+          "oklch(51% 0.01365 92.98)",
+          "oklch(63% 0.01365 92.98)",
+          "oklch(75% 0.01365 92.98)",
+          "oklch(87% 0.01365 92.98)",
+          "oklch(95% 0.01365 92.98)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Light paper",
+        "tonalRamp": [
+          "oklch(15% 0.00668 97.35)",
+          "oklch(27% 0.00668 97.35)",
+          "oklch(39% 0.00668 97.35)",
+          "oklch(51% 0.00668 97.35)",
+          "oklch(63% 0.00668 97.35)",
+          "oklch(75% 0.00668 97.35)",
+          "oklch(87% 0.00668 97.35)",
+          "oklch(95% 0.00668 97.35)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Dark ink",
+        "tonalRamp": [
+          "oklch(15% 0.01206 78.11)",
+          "oklch(27% 0.01206 78.11)",
+          "oklch(39% 0.01206 78.11)",
+          "oklch(51% 0.01206 78.11)",
+          "oklch(63% 0.01206 78.11)",
+          "oklch(75% 0.01206 78.11)",
+          "oklch(87% 0.01206 78.11)",
+          "oklch(95% 0.01206 78.11)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted ink",
+        "tonalRamp": [
+          "oklch(15% 0.02283 87.57)",
+          "oklch(27% 0.02283 87.57)",
+          "oklch(39% 0.02283 87.57)",
+          "oklch(51% 0.02283 87.57)",
+          "oklch(63% 0.02283 87.57)",
+          "oklch(75% 0.02283 87.57)",
+          "oklch(87% 0.02283 87.57)",
+          "oklch(95% 0.02283 87.57)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Quiet rule",
+        "tonalRamp": [
+          "oklch(15% 0.01976 90.56)",
+          "oklch(27% 0.01976 90.56)",
+          "oklch(39% 0.01976 90.56)",
+          "oklch(51% 0.01976 90.56)",
+          "oklch(63% 0.01976 90.56)",
+          "oklch(75% 0.01976 90.56)",
+          "oklch(87% 0.01976 90.56)",
+          "oklch(95% 0.01976 90.56)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Terracotta",
+        "tonalRamp": [
+          "oklch(15% 0.13288 37.88)",
+          "oklch(27% 0.13288 37.88)",
+          "oklch(39% 0.13288 37.88)",
+          "oklch(51% 0.13288 37.88)",
+          "oklch(63% 0.13288 37.88)",
+          "oklch(75% 0.13288 37.88)",
+          "oklch(87% 0.13288 37.88)",
+          "oklch(95% 0.13288 37.88)"
+        ]
+      },
+      "green": {
+        "role": "secondary",
+        "displayName": "Deep sage green",
+        "tonalRamp": [
+          "oklch(15% 0.04185 158.11)",
+          "oklch(27% 0.04185 158.11)",
+          "oklch(39% 0.04185 158.11)",
+          "oklch(51% 0.04185 158.11)",
+          "oklch(63% 0.04185 158.11)",
+          "oklch(75% 0.04185 158.11)",
+          "oklch(87% 0.04185 158.11)",
+          "oklch(95% 0.04185 158.11)"
+        ]
+      },
+      "sage": {
+        "role": "secondary",
+        "displayName": "Pale sage",
+        "tonalRamp": [
+          "oklch(15% 0.01846 127.15)",
+          "oklch(27% 0.01846 127.15)",
+          "oklch(39% 0.01846 127.15)",
+          "oklch(51% 0.01846 127.15)",
+          "oklch(63% 0.01846 127.15)",
+          "oklch(75% 0.01846 127.15)",
+          "oklch(87% 0.01846 127.15)",
+          "oklch(95% 0.01846 127.15)"
+        ]
+      },
+      "error": {
+        "role": "secondary",
+        "displayName": "Rust error",
+        "tonalRamp": [
+          "oklch(15% 0.12355 34.73)",
+          "oklch(27% 0.12355 34.73)",
+          "oklch(39% 0.12355 34.73)",
+          "oklch(51% 0.12355 34.73)",
+          "oklch(63% 0.12355 34.73)",
+          "oklch(75% 0.12355 34.73)",
+          "oklch(87% 0.12355 34.73)",
+          "oklch(95% 0.12355 34.73)"
+        ]
+      },
+      "inverse": {
+        "role": "neutral",
+        "displayName": "Warm inverse",
+        "tonalRamp": [
+          "oklch(15% 0.01201 96.42)",
+          "oklch(27% 0.01201 96.42)",
+          "oklch(39% 0.01201 96.42)",
+          "oklch(51% 0.01201 96.42)",
+          "oklch(63% 0.01201 96.42)",
+          "oklch(75% 0.01201 96.42)",
+          "oklch(87% 0.01201 96.42)",
+          "oklch(95% 0.01201 96.42)"
+        ]
+      },
+      "control-border": {
+        "role": "neutral",
+        "displayName": "Control border",
+        "tonalRamp": [
+          "oklch(15% 0.02328 89.83)",
+          "oklch(27% 0.02328 89.83)",
+          "oklch(39% 0.02328 89.83)",
+          "oklch(51% 0.02328 89.83)",
+          "oklch(63% 0.02328 89.83)",
+          "oklch(75% 0.02328 89.83)",
+          "oklch(87% 0.02328 89.83)",
+          "oklch(95% 0.02328 89.83)"
+        ]
+      },
+      "answer-border": {
+        "role": "neutral",
+        "displayName": "Answer border",
+        "tonalRamp": [
+          "oklch(15% 0.02315 89.82)",
+          "oklch(27% 0.02315 89.82)",
+          "oklch(39% 0.02315 89.82)",
+          "oklch(51% 0.02315 89.82)",
+          "oklch(63% 0.02315 89.82)",
+          "oklch(75% 0.02315 89.82)",
+          "oklch(87% 0.02315 89.82)",
+          "oklch(95% 0.02315 89.82)"
+        ]
+      },
+      "answer-error-bg": {
+        "role": "secondary",
+        "displayName": "Pale rust",
+        "tonalRamp": [
+          "oklch(15% 0.02231 49.92)",
+          "oklch(27% 0.02231 49.92)",
+          "oklch(39% 0.02231 49.92)",
+          "oklch(51% 0.02231 49.92)",
+          "oklch(63% 0.02231 49.92)",
+          "oklch(75% 0.02231 49.92)",
+          "oklch(87% 0.02231 49.92)",
+          "oklch(95% 0.02231 49.92)"
+        ]
+      },
+      "primary-hover": {
+        "role": "neutral",
+        "displayName": "Warm ink hover",
+        "tonalRamp": [
+          "oklch(15% 0.02308 74.94)",
+          "oklch(27% 0.02308 74.94)",
+          "oklch(39% 0.02308 74.94)",
+          "oklch(51% 0.02308 74.94)",
+          "oklch(63% 0.02308 74.94)",
+          "oklch(75% 0.02308 74.94)",
+          "oklch(87% 0.02308 74.94)",
+          "oklch(95% 0.02308 74.94)"
+        ]
+      },
+      "secondary-hover": {
+        "role": "neutral",
+        "displayName": "Paper hover",
+        "tonalRamp": [
+          "oklch(15% 0.01789 92.69)",
+          "oklch(27% 0.01789 92.69)",
+          "oklch(39% 0.01789 92.69)",
+          "oklch(51% 0.01789 92.69)",
+          "oklch(63% 0.01789 92.69)",
+          "oklch(75% 0.01789 92.69)",
+          "oklch(87% 0.01789 92.69)",
+          "oklch(95% 0.01789 92.69)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home heading; fixed 42px on phones."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Compact practice-page headings."
+      },
+      "question-symbol": {
+        "displayName": "Question Symbol",
+        "purpose": "Large Roman numerals and chord roots."
+      },
+      "question": {
+        "displayName": "Question",
+        "purpose": "Question text beside the musical symbol."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Home exercise-link titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions and instructions."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Settings labels and progress."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Primary, secondary and text actions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "reference-modal",
+        "value": "0 20px 60px #20170d40",
+        "purpose": "Circle reference dialog only."
+      },
+      {
+        "name": "answer-selected",
+        "value": "inset 0 0 0 1px var(--green)",
+        "purpose": "Reinforce checked native radio answer."
+      }
+    ],
+    "motion": [
+      {
+        "name": "question-entrance",
+        "value": "200ms cubic-bezier(.16,1,.3,1); opacity .65 → 1; translateY(4px) → translateY(0); blur(1px) → blur(0)",
+        "purpose": "Chord and interval prompts on entry; shared helper skips under prefers-reduced-motion: reduce."
+      },
+      {
+        "name": "settings-chevron",
+        "value": "transform .15s; rotate(180deg) when open",
+        "purpose": "Disclosure state; transition removed under reduced motion."
+      },
+      {
+        "name": "home-arrow",
+        "value": "transform .15s; translateX(3px) on hover",
+        "purpose": "Exercise-link hover; transition removed under reduced motion."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}",
+        "purpose": "Global CSS policy; JavaScript separately suppresses prompt entrance."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "keys-stacked",
+        "value": "max-width: 700px"
+      },
+      {
+        "name": "phone",
+        "value": "max-width: 600px"
+      },
+      {
+        "name": "reference-compact",
+        "value": "max-width: 540px"
+      },
+      {
+        "name": "narrow-phone",
+        "value": "max-width: 350px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Dark-ink check and continuation action; height is a minimum.",
+      "html": "<button class=\"ds-primary\" type=\"button\">Check answer</button>",
+      "css": ".ds-primary{min-height:46px;border-radius:8px;padding:11px 20px;font:500 14px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;border:1px solid var(--ink,#302c26);background:var(--ink,#302c26);color:var(--inverse,#fffdf4)}.ds-primary:hover:not(:disabled){background:var(--primary-hover,#4c4337)}.ds-primary:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:4px;}.ds-primary:disabled{opacity:.55;cursor:default}"
+    },
+    {
+      "name": "Secondary action",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined new-round action.",
+      "html": "<button class=\"ds-secondary\" type=\"button\">New round</button>",
+      "css": ".ds-secondary{min-height:46px;border-radius:8px;padding:11px 20px;font:500 14px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;border:1px solid var(--control-border,#b9b3a3);background:transparent;color:var(--ink,#302c26)}.ds-secondary:hover:not(:disabled){background:var(--secondary-hover,#e9e5d8)}.ds-secondary:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:4px;}.ds-secondary:disabled{opacity:.55;cursor:default}"
+    },
+    {
+      "name": "Text action",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Underlined reveal or cancel action with a full touch target.",
+      "html": "<button class=\"ds-text\" type=\"button\">Show answer</button>",
+      "css": ".ds-text{min-height:46px;border-radius:8px;padding:11px 20px;font:500 14px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;padding-inline:8px;border:0;background:transparent;color:var(--muted,#686254);text-decoration:underline;text-underline-offset:4px}.ds-text:hover:not(:disabled){color:var(--accent,#a8492b)}.ds-text:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:4px;}.ds-text:disabled{opacity:.55;cursor:default}"
+    },
+    {
+      "name": "Native select",
+      "kind": "input",
+      "refersTo": "field-select",
+      "description": "Labelled native session field; phone text grows to 16px.",
+      "html": "<label class=\"ds-field\">Scales<select><option>Common keys · your 9</option><option>All major keys</option></select></label>",
+      "css": ".ds-field{display:block;font:12px/1.5 Arial,Helvetica,sans-serif;color:var(--muted,#686254)}.ds-field select{display:block;width:100%;min-height:46px;margin-top:7px;border:1px solid var(--control-border,#b9b3a3);background:var(--surface,#fbfaf5);border-radius:7px;padding:9px 12px;color:var(--ink,#302c26);font:14px/1.5 Arial,Helvetica,sans-serif}.ds-field select:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:4px;}@media(max-width:600px){.ds-field select{font-size:16px}}"
+    },
+    {
+      "name": "Circle reference shortcut",
+      "kind": "nav",
+      "refersTo": "nav-shortcut",
+      "description": "Persistent quiet reference affordance; modal behavior is supplied by the application.",
+      "html": "<button class=\"ds-shortcut\" type=\"button\" aria-label=\"Open circle of fifths\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 3v9h9M12 12l-6 6\"/></svg><span>Circle of fifths</span></button>",
+      "css": ".ds-shortcut{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;border:0;border-radius:6px;padding:8px;background:transparent;font:12px/1.5 Arial,Helvetica,sans-serif;color:var(--accent,#a8492b);cursor:pointer;text-align:left}.ds-shortcut:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:3px}@media(max-width:540px){.ds-shortcut{gap:5px}.ds-shortcut span{font-size:10px;max-width:45px;line-height:1.2}}"
+    },
+    {
+      "name": "Practice surface",
+      "kind": "card",
+      "refersTo": "practice-stage",
+      "description": "Flat, ruled paper stage with a large musical prompt.",
+      "html": "<section class=\"ds-stage\"><p class=\"ds-key\">C major</p><div class=\"ds-question\"><span class=\"ds-symbol\">ii</span><span class=\"ds-question-text\">Which root builds this chord?</span></div></section>",
+      "css": ".ds-stage{padding:28px;background:var(--surface,#fbfaf5);border:1px solid var(--line,#d7d2c4);border-radius:var(--radius,14px);color:var(--ink,#302c26);font-family:Arial,Helvetica,sans-serif}.ds-key{font-size:16px;color:var(--green,#3e5949);font-weight:600;margin:0 0 8px}.ds-question{display:flex;align-items:center;gap:22px;min-height:88px}.ds-symbol{font:400 76px/1.05 Georgia,serif;letter-spacing:-.035em}.ds-question-text{max-width:250px;font-size:21px;line-height:1.3}@media(max-width:600px){.ds-stage{padding:20px 16px}.ds-key{font-size:15px}.ds-question{gap:18px;min-height:76px}.ds-symbol{font-size:66px}.ds-question-text{font-size:18px;max-width:190px}}@media(max-width:350px){.ds-symbol{font-size:58px}}"
+    },
+    {
+      "name": "Answer selection and feedback",
+      "kind": "custom",
+      "refersTo": "answer-key",
+      "description": "Representative native radio keys: neutral, selected, correct and incorrect states remain in the same grid.",
+      "html": "<fieldset class=\"ds-answers\"><legend>Root note</legend><div class=\"ds-answer-grid\"><label><input type=\"radio\" name=\"ds-root\"/><span>C</span></label><label><input type=\"radio\" name=\"ds-root\" checked/><span>C♯<small>/ D♭</small></span></label><label class=\"ds-correct\"><input type=\"radio\" name=\"ds-root\" disabled/><span>D<small>Correct</small></span></label><label class=\"ds-incorrect\"><input type=\"radio\" name=\"ds-root\" disabled/><span>E<small>Not quite</small></span></label></div></fieldset>",
+      "css": ".ds-answers{margin:0;padding:0;border:0;min-width:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink,#302c26)}.ds-answers legend{font-size:12px;color:var(--muted,#686254);margin-bottom:10px}.ds-answer-grid{display:grid;gap:8px;grid-template-columns:repeat(6,minmax(0,1fr))}.ds-answer-grid label{position:relative;min-width:0}.ds-answer-grid input{position:absolute;opacity:0;width:1px;height:1px}.ds-answer-grid span{display:flex;align-items:center;justify-content:center;gap:3px;min-height:54px;padding:8px 4px;background:transparent;border:1px solid var(--answer-border,#bfb9a9);border-radius:7px;font-size:18px;cursor:pointer}.ds-answer-grid small{font-size:11px;color:var(--muted,#686254)}.ds-answer-grid label:hover span{border-color:var(--green,#3e5949);background:#f0f2e9}.ds-answer-grid input:checked+span{border-color:var(--green,#3e5949);background:var(--sage,#e4eadd);box-shadow:inset 0 0 0 1px var(--green,#3e5949)}.ds-answer-grid input:focus-visible+span{outline:3px solid var(--accent,#a8492b);outline-offset:3px}.ds-answer-grid .ds-correct span{background:var(--green,#3e5949);border-color:var(--green,#3e5949);color:var(--inverse,#fffdf4)}.ds-answer-grid .ds-correct small{color:#e5ecdf}.ds-answer-grid .ds-incorrect span{background:var(--answer-error-bg,#f3e2d9);border-color:var(--error,#963e29);color:var(--error,#963e29)}.ds-answer-grid .ds-incorrect small{color:inherit}.ds-answer-grid input:disabled+span{cursor:default}@media(max-width:600px){.ds-answer-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.ds-answer-grid span{min-height:52px;flex-direction:column;gap:1px;font-size:17px}.ds-answer-grid small{font-size:10px}}"
+    },
+    {
+      "name": "Closed session settings",
+      "kind": "custom",
+      "refersTo": "session-settings",
+      "description": "Native disclosure showing active settings; application code handles draft/apply state.",
+      "html": "<details class=\"ds-settings\"><summary><span>Common keys · Chords + progressions</span><span class=\"ds-settings-change\">Settings <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></span></summary><p>Keep your current round until you apply these settings.</p></details>",
+      "css": ".ds-settings{border-block:1px solid var(--line,#d7d2c4);margin-bottom:24px;font:13px/1.5 Arial,Helvetica,sans-serif;color:var(--muted,#686254)}.ds-settings>summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:52px;list-style:none;cursor:pointer}.ds-settings summary::-webkit-details-marker{display:none}.ds-settings summary:focus-visible{outline:3px solid var(--accent,#a8492b);outline-offset:4px;}.ds-settings-change{display:flex;align-items:center;gap:6px;color:var(--ink,#302c26);flex-shrink:0}.ds-settings-change svg{transition:transform .15s}.ds-settings[open] svg{transform:rotate(180deg)}.ds-settings p{font-size:12px;padding:8px 0 20px;margin:0}@media(max-width:600px){.ds-settings{margin-bottom:20px}.ds-settings>summary{font-size:12px;min-height:48px;gap:8px}.ds-settings-change{font-size:11px}}@media(prefers-reduced-motion:reduce){.ds-settings-change svg{transition:none}}"
+    },
+    {
+      "name": "Metronome beat indicators",
+      "kind": "custom",
+      "refersTo": "beat-indicator",
+      "description": "Numbered circles communicate passed, current and upcoming beats without decorative hardware.",
+      "html": "<ol class=\"ds-beats\" aria-label=\"Beat 2 of 4\"><li class=\"ds-passed\">1</li><li class=\"ds-active\" aria-current=\"step\">2</li><li>3</li><li>4</li></ol>",
+      "css": ".ds-beats{list-style:none;display:flex;justify-content:center;gap:10px;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}.ds-beats li{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--answer-border,#bfb9a9);border-radius:50%;font-size:15px;color:var(--muted,#686254)}.ds-beats .ds-active{background:var(--green,#3e5949);border-color:var(--green,#3e5949);color:white}.ds-beats .ds-passed{background:var(--sage,#e4eadd);border-color:var(--sage,#e4eadd);color:var(--green,#3e5949)}@media(max-width:600px){.ds-beats{gap:7px}.ds-beats li{width:36px;height:36px;font-size:13px}}"
+    },
+    {
+      "name": "Progression slots",
+      "kind": "chip",
+      "refersTo": "progression-slot",
+      "description": "Quiet steps retain completed chords and highlight the current degree.",
+      "html": "<div class=\"ds-slots\" aria-label=\"Chord progression\"><span class=\"ds-done\">C</span><span class=\"ds-slot-active\" aria-current=\"step\">ii</span><span>V</span><span>I</span></div>",
+      "css": ".ds-slots{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:14px;font-family:Arial,Helvetica,sans-serif}.ds-slots span{font-size:16px;color:var(--muted,#686254);padding:6px 10px;border:1px solid transparent;border-radius:5px}.ds-slots .ds-slot-active{background:var(--sage,#e4eadd);color:var(--green,#3e5949);border-color:#a6b69b}.ds-slots .ds-done{color:var(--green,#3e5949);font-size:13px}@media(max-width:600px){.ds-slots{gap:4px}.ds-slots span{padding:5px 8px}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The compact practice desk",
+    "overview": "A compact practice desk combines warm paper, dark ink, terracotta actions and sage learning states. Georgia gives headings and musical symbols a human, familiar voice; Arial keeps instructions and controls direct. The interface is quiet and compact, with ruled divisions and one plain practice surface.\n\nThe same heading, closed settings summary and restrained controls recur across the four exercises. The circle diagram and metronome retain their teaching roles; ornamental screws and inset equipment framing do not return. The visual system supports quick practice with a guitar in hand.",
+    "keyCharacteristics": [
+      "Warm paper and dark ink with restrained terracotta and sage.",
+      "Compact headings, readable musical symbols and touch-sized controls.",
+      "Flat practice surfaces with quiet borders.",
+      "Stable answer controls, explicit settings application and optional explanations."
+    ],
+    "rules": [
+      {
+        "name": "The Functional Accent Rule",
+        "body": "Use terracotta for emphasis and focus, green for key context and correct answers, and error color for incorrect answers. Dark ink carries the primary button.",
+        "section": "colors"
+      },
+      {
+        "name": "The Anchored Answer Rule",
+        "body": "Keep the answer grid in place after submission; change its state and reveal feedback below it. The primary action changes to continue in the same action row.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Practice Rule",
+        "body": "Keep practice surfaces flat. Reserve ambient shadow for the modal reference; use the small inset stroke only to reinforce answer selection.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reuse the paper, surface, ink and state colors from the frontmatter.",
+      "Do pair Georgia headings and musical symbols with Arial instructions and controls.",
+      "Do retain the answer grid and show concise feedback in place.",
+      "Do keep settings collapsed initially, apply drafts explicitly and restore drafts on cancel or closure.",
+      "Do place theory in native disclosures and keep visible keyboard focus.",
+      "Do skip the question entrance and CSS transitions when reduced motion is requested."
+    ],
+    "donts": [
+      "Don't restore screw ornaments, simulated hardware or inset equipment frames.",
+      "Don't stretch trainer controls to the full desktop shell.",
+      "Don't use correct/error color as the only feedback; retain the written answer and explanation.",
+      "Don't silently reset an active round when a draft preference changes.",
+      "Don't introduce decorative imagery into the practice controls."
+    ]
+  }
+}

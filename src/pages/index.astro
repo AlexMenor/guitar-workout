@@ -1,38 +1,34 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import '../styles/circle.css';
-const exercises = (await getCollection('exercises')).filter(({ id }) => id !== 'chromatic-warm-up').sort((a, b) => a.data.title.localeCompare(b.data.title));
+import ExerciseIcon from '../components/ExerciseIcon.astro';
+const exercises = [
+  { slug: 'fretboard-notes', title: 'Know your notes', description: 'Find a note across all six strings. Let the metronome keep you moving.', icon: 'notes', detail: 'Play · metronome practice' },
+  { slug: 'know-your-chords', title: 'Know your chords', description: 'Connect each scale degree to its chord. Recall roots and build progressions.', icon: 'chords', detail: 'Recall · 10 questions' },
+  { slug: 'know-your-intervals', title: 'Know your intervals', description: 'Find relative keys, fourths and fifths. Make the connections feel familiar.', icon: 'intervals', detail: 'Connect · 12 questions' },
+  { slug: 'know-your-keys', title: 'Know your keys', description: 'Learn the shape of a chord family. Fill the gaps as the labels fade.', icon: 'keys', detail: 'Study · recall · rebuild' },
+] as const;
 ---
 <Layout title="Exercise library">
-  <section aria-label="Exercises">
+  <section aria-labelledby="home-title">
+    <div class="home-heading"><h1 id="home-title">A little practice,<br /><em>often.</em></h1><p>Pick a focus.<br />Give it your full attention.</p></div>
+    <p class="last-practice" id="last-practice" hidden>Last practised: <a id="last-practice-link" href="/">Continue</a></p>
     <div class="exercise-grid">
-      <a class="exercise-card" href="/exercises/fretboard-notes/">
-
-        <h3>Know your notes</h3>
-        <p>Find all 12 notes, one string per beat. Build your fretboard memory with an audible metronome.</p>
-
-      </a>
-      <a class="exercise-card chord-card" href="/exercises/know-your-chords/">
-        <h3>Know your chords</h3>
-        <p>Recall the chords of major and natural-minor keys. Short sessions, explanations, and spaced review.</p>
-      </a>
-      <a class="exercise-card interval-card" href="/exercises/know-your-intervals/">
-        <h3>Know your intervals</h3>
-        <p>Find relative major/minor keys, fourths and fifths. Focus on your common keys or practise them all.</p>
-      </a>
-      <a class="exercise-card keys-card" href="/exercises/know-your-keys/">
-        <h3>Know your keys</h3>
-        <p>Study a chord family on the circle, then fill in its missing names and numbers.</p>
-      </a>
-      {exercises.map(({ id, data }) => (
-        <a class="exercise-card" href={`/exercises/${id}/`}>
-
-          <h3>{data.title}</h3>
-          <p>{data.description}</p>
-
-        </a>
-      ))}
+      {exercises.map(exercise => <a class="exercise-card" href={`/exercises/${exercise.slug}/`}>
+        <div class="exercise-topline"><ExerciseIcon name={exercise.icon} /><svg class="open-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></div>
+        <h2>{exercise.title}</h2><p>{exercise.description}</p><span class="exercise-caption">{exercise.detail}</span>
+      </a>)}
     </div>
+    <p class="home-note">Your pace. Your common keys. Progress saved on this device.</p>
   </section>
 </Layout>
+<script>
+  const exercises: Record<string, string> = { 'fretboard-notes': 'Know your notes', 'know-your-chords': 'Know your chords', 'know-your-intervals': 'Know your intervals', 'know-your-keys': 'Know your keys' };
+  try {
+    const slug = localStorage.getItem('guitar-workout:last-exercise') ?? '';
+    if (exercises[slug]) {
+      const link = document.querySelector<HTMLAnchorElement>('#last-practice-link')!;
+      link.href = `/exercises/${slug}/`; link.textContent = exercises[slug];
+      document.querySelector<HTMLElement>('#last-practice')!.hidden = false;
+    }
+  } catch { /* The exercise library works without storage. */ }
+</script>

@@ -18,6 +18,23 @@ const cue = element('cue');
 const countIn = element('count-in');
 const beatElements = Array.from(root.querySelectorAll<HTMLElement>('[data-beat]'));
 const countElements = Array.from(root.querySelectorAll<HTMLElement>('[data-count-beat]'));
+const settingsPanel = element<HTMLDetailsElement>('note-settings');
+const preferenceKey = 'guitar-workout:notes:preferences';
+try {
+  const saved = JSON.parse(localStorage.getItem(preferenceKey) ?? 'null');
+  if (saved && Number.isInteger(saved.tempo) && saved.tempo >= 20 && saved.tempo <= 180) tempo.value = String(saved.tempo);
+  if (saved && Array.from(duration.options).some(option => option.value === saved.duration)) duration.value = saved.duration;
+  if (saved?.notePool === 'all' || saved?.notePool === 'accidentals') notePool.value = saved.notePool;
+  includeFlats.checked = saved?.includeFlats === true;
+  if (saved?.mode === 'endless') root.querySelector<HTMLInputElement>('input[name="mode"][value="endless"]')!.checked = true;
+} catch { /* Practice is available without storage. */ }
+function savePreferences() {
+  try { localStorage.setItem(preferenceKey, JSON.stringify({ tempo: Number(tempo.value), duration: duration.value, notePool: notePool.value, includeFlats: includeFlats.checked, mode: timed() ? 'timed' : 'endless' })); } catch { /* Storage is optional. */ }
+}
+function summarizeSettings() {
+  settingsPanel.querySelector<HTMLElement>('[data-settings-summary]')!.textContent = `${tempo.value} BPM · ${notePool.value === 'all' ? 'All notes' : 'Accidentals'} · ${timed() ? `${Number(duration.value) / 60} min` : 'Endless'}`;
+  element('tempo-output').textContent = tempo.value;
+}
 let state: 'ready' | 'running' | 'paused' | 'finished' = 'ready';
 let audio: AudioContext | undefined;
 let starting = false;
@@ -56,6 +73,7 @@ function resetHighlights() {
   countElements.forEach(el => el.classList.remove('active'));
 }
 function settings() {
+  summarizeSettings();
   const active = state === 'running' || starting;
   tempo.disabled = active;
   modes.disabled = active || state === 'paused';
@@ -198,6 +216,7 @@ async function begin() {
     practiceStart = nextTime + 4 * interval;
     endTime = practiceStart + limit() - elapsedBefore;
     state = 'running';
+    settingsPanel.open = false;
     showNotes();
     resetHighlights();
     countIn.hidden = false;
@@ -216,13 +235,13 @@ async function begin() {
 }
 start.addEventListener('click', begin);
 stop.addEventListener('click', finish);
-tempo.addEventListener('input', () => { element('tempo-output').textContent = tempo.value; });
-root.querySelectorAll('input[name="mode"]').forEach(input => input.addEventListener('change', () => { settings(); progress(); }));
-duration.addEventListener('change', () => progress());
+tempo.addEventListener('input', () => { summarizeSettings(); savePreferences(); });
+root.querySelectorAll('input[name="mode"]').forEach(input => input.addEventListener('change', () => { settings(); progress(); savePreferences(); }));
+duration.addEventListener('change', () => { progress(); summarizeSettings(); savePreferences(); });
 function refreshNotes() {
   pick = makePicker();
   notes = [drawNote(), drawNote()];
-  showNotes();
+  showNotes(); summarizeSettings(); savePreferences();
 }
 notePool.addEventListener('change', refreshNotes);
 includeFlats.addEventListener('change', refreshNotes);

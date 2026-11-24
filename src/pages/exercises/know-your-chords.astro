@@ -1,34 +1,38 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PracticeHeading from '../../components/PracticeHeading.astro';
+import SessionSettings from '../../components/SessionSettings.astro';
 import { ROOT_OPTIONS } from '../../lib/harmony';
 import '../../styles/harmony.css';
 ---
 <Layout title="Know your chords" description="Learn major and natural-minor chords with short recall sessions and spaced review, online or offline.">
-  <a class="back-link" href="/">← All exercises</a>
-  <section class="harmony" data-harmony aria-labelledby="harmony-title">
-    <h1 id="harmony-title">Know your chords.</h1>
-    <div class="harmony-settings">
-      <label for="scale-mode">Scales<select id="scale-mode"><option value="common" selected>E, A, D, G, C major · Em, Am, Bm, Dm</option><option value="both">Major + natural minor</option><option value="major">Major</option><option value="minor">Natural minor</option></select></label>
-      <label for="question-kind">Questions<select id="question-kind"><option value="mixed">Chords + progressions</option><option value="single">Single chords</option><option value="progression">Progressions</option></select></label>
-      <label class="reverse-toggle"><input id="reverse-mode" type="checkbox" /> Include reverse questions</label>
-    </div>
-    <div class="harmony-progress"><span id="question-progress">Question 1 of 10</span><span id="review-status"></span></div>
-    <div class="harmony-pedal" id="question-panel">
-      <p id="key-name" class="key-name"></p>
-      <h2 id="question-prompt" tabindex="-1"></h2>
-      <div id="progression-slots" class="progression-slots" hidden></div>
-      <p class="recall-hint" id="recall-hint">Recall the root note. The Roman numeral already gives the chord quality.</p>
+  <section class="practice harmony" data-harmony aria-labelledby="harmony-title">
+    <PracticeHeading title="Know your chords" id="harmony-title" />
+    <SessionSettings id="chord-settings" summary="Common keys · Chords + progressions" apply="Apply & start new round">
+      <div class="settings-grid">
+        <label for="scale-mode">Scales<select id="scale-mode"><option value="common" selected>Common keys · your 9</option><option value="both">All major + natural minor</option><option value="major">All major keys</option><option value="minor">All natural-minor keys</option></select></label>
+        <label for="question-kind">Questions<select id="question-kind"><option value="mixed">Chords + progressions</option><option value="single">Single chords</option><option value="progression">Progressions</option></select></label>
+        <label class="toggle-label"><input id="reverse-mode" type="checkbox" /> Also find the degree from a chord name</label>
+      </div>
+    </SessionSettings>
+    <div class="session-progress"><span id="question-progress">Question 1 of 10</span><span id="review-status"></span></div>
+    <div class="practice-stage" id="question-panel">
+      <div class="question-copy"><p id="key-name" class="key-name"></p><h2 class="question-prompt" id="question-prompt" tabindex="-1" aria-describedby="key-name question-progress recall-hint"></h2><div id="progression-slots" class="progression-slots" hidden></div><p class="recall-hint" id="recall-hint">Choose the root. The numeral gives the quality.</p></div>
       <form id="answer-form">
-        <fieldset id="root-field"><legend>Root note</legend><div class="answer-grid root-grid">{ROOT_OPTIONS.map(notes => <label><input type="radio" name="root" value={notes[0]} /><span>{notes.join(' / ')}</span></label>)}</div></fieldset>
-        <fieldset id="degree-field" hidden><legend>Chord degree</legend><div id="degree-options" class="answer-grid degree-grid"></div></fieldset>
-        <p id="answer-error" role="alert"></p>
-        <div class="answer-actions"><button id="check-answer" class="harmony-primary" type="submit">Check answer</button><button id="reveal-answer" type="button">Show answer</button></div>
+        <fieldset class="answer-field" id="root-field"><legend>Root note</legend><div class="answer-grid root-grid">{ROOT_OPTIONS.map(notes => <label><input type="radio" name="root" value={notes[0]} /><span><b>{notes[0]}</b>{notes[1] && <small>/ {notes[1]}</small>}</span></label>)}</div></fieldset>
+        <fieldset class="answer-field" id="degree-field" hidden><legend>Chord degree</legend><div id="degree-options" class="answer-grid degree-grid"></div></fieldset>
+        <p id="answer-error" class="answer-error" role="alert"></p>
+        <div class="answer-actions"><button id="check-answer" class="primary-button" type="submit">Check answer</button><button id="next-question" aria-describedby="feedback-title feedback-short" class="primary-button" type="button" hidden>Next question</button><button id="reveal-answer" class="text-button" type="button">Show answer</button></div>
       </form>
-      <section id="feedback" class="feedback" aria-label="Answer feedback" hidden><h3 id="feedback-title" tabindex="-1"></h3><p id="feedback-reason"></p><p id="feedback-notes"></p><div id="scale-explanation" class="scale-explanation"></div><button id="next-question" class="harmony-primary" type="button">Next question</button></section>
+      <section id="feedback" class="feedback" aria-label="Answer feedback" hidden>
+        <h3 id="feedback-title" tabindex="-1"></h3><p id="feedback-short"></p>
+        <details class="explanation" id="chord-explanation"><summary>Why this chord?</summary><p id="feedback-reason"></p><p id="feedback-notes"></p><div id="scale-explanation" class="scale-explanation"></div></details>
+      </section>
     </div>
-    <section id="session-summary" class="harmony-pedal session-summary" hidden><h2 id="summary-title" tabindex="-1">Session complete.</h2><p id="summary-score"></p><p id="summary-review"></p><div class="answer-actions"><button id="retry-missed" class="harmony-primary" type="button" hidden>Retry missed questions</button><button id="practice-again" type="button">New session</button></div></section>
-    <p id="storage-message" class="harmony-help" role="status"></p>
-    <p class="harmony-help">Start with E, A, D, G, C major and Em, Am, Bm, Dm, or choose from all 15 standard key signatures in each mode. Minor means natural minor. No timer, no sound.</p>
+    <section id="session-summary" class="practice-stage session-summary" hidden><h2 id="summary-title" tabindex="-1">Round complete.</h2><p id="summary-score"></p><p id="summary-misses" class="summary-misses"></p><p id="summary-review"></p><div class="button-row"><button id="retry-missed" class="primary-button" type="button" hidden>Retry missed questions</button><button id="practice-again" class="secondary-button" type="button">New round</button></div></section>
+    <p class="keyboard-note">Arrow keys to choose · <kbd>Enter</kbd> to check or continue</p>
+    <details class="practice-help"><summary>About this practice</summary><p>Common keys: E, A, D, G, C major and Em, Am, Bm, Dm. Or choose all 15 standard key signatures in each mode. Minor means natural minor.</p><p>Uppercase numerals mean major, lowercase mean minor, and ° means diminished. Choose the root; tonic chords are already filled in. Equivalent sharp and flat pitches count.</p></details>
+    <p id="storage-message" class="storage-note" role="status"></p>
     <noscript><p>Enable JavaScript to practice chords.</p></noscript>
   </section>
 </Layout>

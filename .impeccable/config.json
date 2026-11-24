@@ -10,5 +10,6 @@
         "reason": "Agent: existing game typography preserved under the Impeccable narrow-refinement directive; the user requested removing redundant chord questions and answer controls."
       }
     ]
-  }
+  },
+  "buildPath": "code"
 }

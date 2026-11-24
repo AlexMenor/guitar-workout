@@ -1,32 +1,33 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PracticeHeading from '../../components/PracticeHeading.astro';
+import SessionSettings from '../../components/SessionSettings.astro';
 import { ROOT_OPTIONS } from '../../lib/harmony';
 import '../../styles/intervals.css';
 ---
-<Layout title="Relatives, fourths & fifths" description="Find relative major and minor keys and perfect fourths and fifths. Practise your common keys or every standard key signature.">
-  <a class="back-link" href="/">← All exercises</a>
-  <section class="interval-trainer" data-intervals aria-labelledby="interval-title">
-    <h1 id="interval-title">Relatives, fourths &amp; fifths.</h1>
-    <div class="interval-settings">
-      <label for="interval-scope">Keys<select id="interval-scope"><option value="common">Common keys · your 9</option><option value="all">All keys · including enharmonic spellings</option></select></label>
-      <label for="interval-practice">Practise<select id="interval-practice"><option value="mixed">Mix all three</option><option value="relative">Relative major / minor</option><option value="fourth">Perfect fourths</option><option value="fifth">Perfect fifths</option></select></label>
-    </div>
-    <p id="interval-scope-note" class="interval-help"></p>
+<Layout title="Know your intervals" description="Find relative major and minor keys and perfect fourths and fifths. Practise your common keys or every standard key signature.">
+  <section class="practice interval-trainer" data-intervals aria-labelledby="interval-title">
+    <PracticeHeading title="Know your intervals" id="interval-title" />
+    <SessionSettings id="interval-settings" summary="Common keys · Mixed practice" apply="Apply & start new round">
+      <div class="settings-grid"><label for="interval-scope">Keys<select id="interval-scope"><option value="common">Common keys · your 9</option><option value="all">All keys · alternate spellings included</option></select></label><label for="interval-practice">Practise<select id="interval-practice"><option value="mixed">Relatives, fourths & fifths</option><option value="relative">Relative major / minor</option><option value="fourth">Perfect fourths</option><option value="fifth">Perfect fifths</option></select></label></div><p id="interval-scope-note" class="settings-note"></p>
+    </SessionSettings>
     <div id="interval-round">
-      <div class="interval-progress"><span id="interval-progress"></span><span id="interval-score">0 correct</span></div>
-      <div class="tonic-pedal"><span id="interval-source-label" class="interval-label">STARTING KEY</span><strong id="interval-tonic">—</strong><span id="interval-mode" class="tonic-mode"></span></div>
-      <div class="interval-question"><span id="interval-kind" class="interval-label"></span><h2 id="interval-prompt" tabindex="-1"></h2></div>
-      <fieldset class="interval-answers"><legend id="interval-answer-label">Choose the note</legend><div class="interval-keypad">{ROOT_OPTIONS.map((notes, pitch) => <button type="button" data-pitch={pitch}>{notes.join(' / ')}</button>)}</div></fieldset>
-      <div id="interval-feedback" class="interval-feedback" role="status" aria-live="polite"></div>
-      <button id="interval-next" class="interval-primary" type="button" hidden>Next question →</button>
+      <div class="session-progress"><span id="interval-progress"></span><span id="interval-score">0 correct</span></div>
+      <div class="practice-stage">
+        <div class="question-copy interval-question">
+          <span id="interval-source-label" class="sr-only">Starting key</span>
+          <div class="interval-source"><strong id="interval-tonic" class="question-symbol">—</strong><span id="interval-mode" class="key-name"></span></div>
+          <span id="interval-kind" class="sr-only"></span><h2 id="interval-prompt" tabindex="-1" aria-describedby="interval-progress interval-answer-label"></h2>
+        </div>
+        <fieldset class="answer-field"><legend id="interval-answer-label">Choose the note</legend><div class="answer-grid interval-keypad">{ROOT_OPTIONS.map((notes, pitch) => <button class="answer-key" type="button" data-pitch={pitch}><b>{notes[0]}</b>{notes[1] && <small>/ {notes[1]}</small>}</button>)}</div></fieldset>
+        <div class="answer-actions"><button id="interval-next" class="primary-button" type="button" hidden>Next question</button><p id="interval-action-hint" class="recall-hint">Tap a note to check your answer.</p></div>
+        <div id="interval-feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+      </div>
     </div>
-    <section id="interval-summary" class="interval-summary" hidden>
-      <h2 tabindex="-1" id="interval-summary-title">Round complete.</h2><p id="interval-summary-score"></p><p id="interval-summary-name"></p>
-      <div class="interval-actions"><button id="interval-again" class="interval-primary" type="button">New round</button><button id="interval-retry" type="button" hidden>Retry missed answers</button></div>
-    </section>
-    <p class="interval-help">Fourths and fifths are always measured upwards. Equivalent sharp/flat answers count; feedback shows the spelling for the question.</p>
-    <p id="interval-storage" class="interval-help" role="status"></p>
-    <noscript><p>Enable JavaScript to practise key relationships.</p></noscript>
+    <section id="interval-summary" class="practice-stage session-summary" hidden><h2 tabindex="-1" id="interval-summary-title">Round complete.</h2><p id="interval-summary-score"></p><p id="interval-summary-misses" class="summary-misses"></p><p id="interval-summary-name"></p><div class="button-row"><button id="interval-retry" class="primary-button" type="button" hidden>Retry missed answers</button><button id="interval-again" class="secondary-button" type="button">New round</button></div></section>
+    <p class="keyboard-note"><kbd>1</kbd>–<kbd>9</kbd> for the first nine notes · <kbd>Enter</kbd> to continue</p>
+    <details class="practice-help"><summary>About this practice</summary><p>Fourths and fifths are always measured upwards. Equivalent sharp/flat answers count; feedback shows the spelling for the question.</p><p>Common keys: E, A, D, G, C major and Em, Am, Bm, Dm. Fourths and fifths use their six distinct tonic notes: C, D, E, G, A, B.</p></details>
+    <p id="interval-storage" class="storage-note" role="status"></p><noscript><p>Enable JavaScript to practise key relationships.</p></noscript>
   </section>
 </Layout>
 <script src="../../scripts/intervals.ts"></script>

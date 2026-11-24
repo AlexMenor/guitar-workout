@@ -1,0 +1,11 @@
+---
+interface Props { summary: string; id: string; apply?: string }
+const { summary, id, apply } = Astro.props;
+---
+<details class="session-settings" id={id}>
+  <summary><span data-settings-summary>{summary}</span><span class="settings-change">Settings <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span></summary>
+  <div class="settings-content">
+    <slot />
+    {apply && <div class="settings-apply"><p>Your current round stays in place until you apply these settings.</p><div class="button-row"><button class="primary-button" data-settings-apply type="button">{apply}</button><button class="text-button" data-settings-cancel type="button">Cancel</button></div></div>}
+  </div>
+</details>

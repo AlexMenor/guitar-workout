@@ -1,3 +1,4 @@
+import { sessionSettings, questionEntrance, practiceKeyboard } from '../lib/practice-ui';
 import {
   createRelationshipRound, relationshipAnswer, readRelationshipPreferences,
   type RelationshipPreferences, type RelationshipCard,
@@ -19,9 +20,11 @@ let retry = false;
 let index = 0;
 let score = 0;
 let answered = false;
-function preferences(): RelationshipPreferences {
+function readPreferences(): RelationshipPreferences {
   return { scope: scope.value as RelationshipPreferences['scope'], practice: practice.value as RelationshipPreferences['practice'] };
 }
+let activePreferences = readPreferences();
+function preferences() { return activePreferences; }
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify(preferences())); el('interval-storage').textContent = ''; }
   catch { el('interval-storage').textContent = 'Practice works, but this browser cannot save your dropdown choices.'; }
@@ -42,6 +45,9 @@ function render(moveFocus = false) {
   el('interval-progress').textContent = `${retry ? 'Retry' : 'Question'} ${index + 1} / ${round.length}`;
   el('interval-score').textContent = `${score} correct`;
   el('interval-feedback').replaceChildren();
+  el('interval-feedback').hidden = true;
+  el('interval-action-hint').hidden = false;
+  questionEntrance(el('interval-prompt'));
   el('interval-feedback').classList.remove('wrong');
   el('interval-next').hidden = true;
   for (const button of buttons) {
@@ -57,7 +63,7 @@ function start(retryQuestions: RelationshipCard[] = []) {
   index = score = 0; missed = [];
   el('interval-summary').hidden = true;
   el('interval-round').hidden = false;
-  el('interval-scope-note').textContent = scope.value === 'common'
+  el('interval-scope-note').textContent = activePreferences.scope === 'common'
     ? 'Starting keys: E, A, D, G, C major · Em, Am, Bm, Dm. Fourths/fifths use their six distinct tonic notes: C, D, E, G, A, B.'
     : 'All 15 standard major and 15 natural-minor key signatures, including both spellings of enharmonic keys. Fourths/fifths cover every tonic spelling used in those keys.';
   render();
@@ -71,6 +77,7 @@ function advance() {
     el('interval-summary').hidden = false;
     el('interval-summary-title').textContent = retry ? 'Retry complete.' : 'Round complete.';
     el('interval-summary-score').textContent = `${score} / ${round.length} correct`;
+    el('interval-summary-misses').textContent = missed.length ? `Revisit: ${[...new Set(missed.map(c => c.kind === 'relative' ? `${c.tonic} ${c.key.mode} → relative key` : `${c.tonic} → ${c.kind}`))].join(' · ')}.` : 'Every connection recalled. Keep building on it.';
     el('interval-summary-name').textContent = retry ? 'Keep connecting each starting note or key with its answer.' : 'New rounds continue through the selected keys before repeating them within each question type.';
     el('interval-retry').hidden = !missed.length;
     el('interval-retry').textContent = `Retry ${missed.length} missed ${missed.length === 1 ? 'answer' : 'answers'}`;
@@ -94,8 +101,13 @@ for (const button of buttons) button.addEventListener('click', () => {
   if (!correct) button.classList.add('incorrect');
   el('interval-feedback').classList.toggle('wrong', !correct);
   const heading = document.createElement('strong'); heading.textContent = `${correct ? 'Correct' : 'Not quite'} — ${expected.label}`;
+  const detail = document.createElement('details');
+  const summary = document.createElement('summary'); summary.textContent = 'Why this answer?';
   const explanation = document.createElement('p'); explanation.textContent = expected.explanation;
-  el('interval-feedback').replaceChildren(heading, explanation);
+  detail.append(summary, explanation);
+  el('interval-feedback').replaceChildren(heading, detail);
+  el('interval-feedback').hidden = false;
+  el('interval-action-hint').hidden = true;
   el('interval-score').textContent = `${score} correct`;
   el('interval-next').hidden = false;
   el('interval-next').textContent = index === round.length - 1 ? 'Finish round →' : 'Next question →';
@@ -104,7 +116,6 @@ for (const button of buttons) button.addEventListener('click', () => {
 el('interval-next').addEventListener('click', advance);
 el('interval-again').addEventListener('click', () => { start(); el('interval-prompt').focus({ preventScroll: true }); });
 el('interval-retry').addEventListener('click', () => { start(missed); el('interval-prompt').focus({ preventScroll: true }); });
-for (const setting of [scope, practice]) setting.addEventListener('change', () => {
-  seen = new Set(); persist(); start();
-});
+sessionSettings(el<HTMLDetailsElement>('interval-settings'), () => `${activePreferences.scope === 'common' ? 'Common keys' : 'All keys'} · ${activePreferences.practice === 'mixed' ? 'Mixed practice' : activePreferences.practice === 'relative' ? 'Relative keys' : activePreferences.practice === 'fourth' ? 'Perfect fourths' : 'Perfect fifths'}`, () => { activePreferences = readPreferences(); seen = new Set(); persist(); start(); });
+practiceKeyboard(root, index => { if (!answered && !el('interval-round').hidden) buttons[index]?.click(); }, advance);
 start(); persist();

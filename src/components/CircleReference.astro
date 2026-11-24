@@ -6,7 +6,7 @@ const point = (radius: number, angle: number) => {
 };
 ---
 <button id="circle-reference-open" class="circle-shortcut" type="button" aria-haspopup="dialog" aria-controls="circle-reference" hidden>
-  <span aria-hidden="true">◷</span> Circle of fifths
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9M12 12l-6 6"/></svg><span>Circle of fifths</span>
 </button>
 <dialog id="circle-reference" aria-labelledby="circle-reference-title" aria-describedby="circle-reference-description">
   <div class="reference-heading">
@@ -59,10 +59,10 @@ const point = (radius: number, angle: number) => {
   });
 </script>
 <style>
-  .circle-shortcut{display:flex;align-items:center;gap:8px;flex-shrink:0;max-width:145px;min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:#f7f4e9;font:inherit;font-size:13px;line-height:1.25;color:var(--accent);cursor:pointer;text-align:left}
-  .circle-shortcut[hidden]{display:none}.circle-shortcut span{font-size:24px}.circle-shortcut:hover{border-color:var(--accent)}
+  .circle-shortcut{display:flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;min-height:44px;border:0;border-radius:6px;padding:8px;background:transparent;font:inherit;font-size:12px;color:var(--accent);cursor:pointer;text-align:left}
+  .circle-shortcut[hidden]{display:none}.circle-shortcut span{font-size:12px}.circle-shortcut:hover{border-color:var(--accent)}
   button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-  dialog{width:640px;max-width:calc(100% - 24px);max-height:calc(100dvh - 32px);padding:22px;border:1px solid var(--line);border-radius:16px;background:#f7f4e9;color:#2e2924;box-shadow:0 20px 80px #20170d40;overscroll-behavior:contain}
+  dialog{width:640px;max-width:calc(100% - 24px);max-height:calc(100dvh - 32px);padding:22px;border:0;border-radius:16px;background:#fbfaf5;color:#302c26;box-shadow:0 20px 60px #20170d40;overscroll-behavior:contain}
   dialog::backdrop{background:#20170d99} :global(body:has(#circle-reference[open])){overflow:hidden}
   .reference-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
   h2{font:400 30px/1.2 Georgia,serif;margin:0}
@@ -72,5 +72,5 @@ const point = (radius: number, angle: number) => {
   .wheel-key{text-anchor:middle;font-family:Arial,Helvetica,sans-serif;font-weight:600;fill:#493120;font-size:26px}.wheel-key.minor{fill:#3e5137;font-size:22px}.wheel-center{text-anchor:middle;font-size:23px;fill:#625747}
   .wheel-star{fill:#98421f;font-size:15px}.reference-legend{font-size:12px}.reference-legend span{color:#98421f}
   .reference-tips{display:grid;grid-template-columns:1fr 1fr;gap:20px}.reference-tips strong{color:#2e2924}.reference-note{border-top:1px solid var(--line);padding-top:12px;font-size:12px;margin-bottom:0}
-  @media(max-width:540px){.circle-shortcut{max-width:112px;padding:8px;font-size:12px;gap:6px}dialog{padding:14px;max-width:calc(100% - 16px)}h2{font-size:26px}.reference-tips{grid-template-columns:1fr;gap:0}.reference-tips p{margin:6px 0}.reference-wheel{max-width:none}}
+  @media(max-width:540px){.circle-shortcut{padding:8px;gap:5px}.circle-shortcut span{font-size:10px;max-width:45px;line-height:1.2}dialog{padding:14px;max-width:calc(100% - 16px)}h2{font-size:26px}.reference-tips{grid-template-columns:1fr;gap:0}.reference-tips p{margin:6px 0}.reference-wheel{max-width:none}}
 </style>
